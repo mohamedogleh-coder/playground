@@ -1,0 +1,20 @@
+spring:
+  config:
+    import: "optional:file:.env[.properties]"
+  application:
+    name: playground
+  datasource:
+    username: ${PRIMARY_DB_USER}
+    url: ${PRIMARY_DB_URL}
+    password: ${PRIMARY_DB_PASSWORD}
+    driver-class-name: ${driver-class-name}
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${issuer-uri}
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
