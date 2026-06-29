@@ -23,7 +23,7 @@ public class StadiumWorkingDay {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Short id;
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "day_of_week", nullable = false)

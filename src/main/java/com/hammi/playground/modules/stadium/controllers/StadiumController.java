@@ -2,7 +2,9 @@ package com.hammi.playground.modules.stadium.controllers;
 
 import com.hammi.playground.modules.stadium.dto.FieldResponse;
 import com.hammi.playground.modules.stadium.dto.StadiumResponse;
+import com.hammi.playground.modules.stadium.dto.WorkingDaysResponse;
 import com.hammi.playground.modules.stadium.services.StadiumService;
+import com.hammi.playground.modules.stadium.services.StadiumWorkingDaysService;
 import com.hammi.playground.util.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class StadiumController {
     private final StadiumService stadiumService;
+    private final StadiumWorkingDaysService workingDaysService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<StadiumResponse>>> getAllStadiums() {
@@ -28,5 +31,10 @@ public class StadiumController {
     @GetMapping("/{stadiumId}/fields")
     public ResponseEntity<ApiResponse<List<FieldResponse>>> getStadiumFields(@PathVariable UUID stadiumId) {
         return ResponseEntity.ok().body(new ApiResponse<>(stadiumService.getStadiumFields(stadiumId)));
+    }
+
+    @GetMapping("/{stadiumId}/working-days")
+    public ResponseEntity<ApiResponse<List<WorkingDaysResponse>>> getStadiumWorkingDays(@PathVariable UUID stadiumId) {
+        return ResponseEntity.ok().body(new ApiResponse<>(workingDaysService.getStadiumWorkingDays(stadiumId)));
     }
 }

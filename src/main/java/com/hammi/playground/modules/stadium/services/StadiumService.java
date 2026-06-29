@@ -4,6 +4,7 @@ package com.hammi.playground.modules.stadium.services;
 import com.hammi.playground.exceptions.NotFoundException;
 import com.hammi.playground.modules.stadium.dto.FieldResponse;
 import com.hammi.playground.modules.stadium.dto.StadiumResponse;
+import com.hammi.playground.modules.stadium.dto.WorkingDaysResponse;
 import com.hammi.playground.modules.stadium.repo.StadiumRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,6 +19,9 @@ import java.util.UUID;
 public class StadiumService {
     private final StadiumRepository stadiumRepository;
     final JdbcTemplate jdbcTemplate;
+
+
+
 
     public List<FieldResponse> getStadiumFields(UUID stadiumId) {
         var stadium = stadiumRepository.findStadiumWithFields(stadiumId).orElseThrow(() -> new NotFoundException("Stadium not exists"));
