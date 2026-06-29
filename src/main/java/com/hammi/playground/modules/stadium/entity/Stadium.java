@@ -1,0 +1,46 @@
+package com.hammi.playground.modules.stadium.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import org.locationtech.jts.geom.Point;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Entity
+@Table(name = "stadiums")
+public class Stadium {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(name = "stadium_name", unique = true, length = 100, nullable = false)
+    private String stadiumName;
+
+
+    @Column(name = "extra_time", nullable = false)
+    private Short extraTime;
+
+    @Column(name = "profile_url")
+    private String profileUrl;
+
+    @Column(columnDefinition = "geography(Point,4326)", name = "location")
+    private Point location;
+
+    @Builder.Default
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "stadium")
+    private List<Field> fields = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "stadium")
+    private List<StadiumWorkingDay> workingDays = new ArrayList<>();
+}

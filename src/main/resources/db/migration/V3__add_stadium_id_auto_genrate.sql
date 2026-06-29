@@ -1,0 +1,1 @@
+ALTER TABLE stadiums ALTER  COLUMN id set Default gen_random_uuid();
