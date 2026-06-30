@@ -23,10 +23,6 @@ public class StadiumService {
 
 
 
-    public List<FieldResponse> getStadiumFields(UUID stadiumId) {
-        var stadium = stadiumRepository.findStadiumWithFields(stadiumId).orElseThrow(() -> new NotFoundException("Stadium not exists"));
-        return stadium.getFields().stream().map((field -> new FieldResponse(field.getId(), field.getCapacity(), field.getCost()))).toList();
-    }
 
 
     public List<StadiumResponse> getAllStadiums() {
