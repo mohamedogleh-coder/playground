@@ -20,25 +20,8 @@ public class StadiumService {
     private final StadiumRepository stadiumRepository;
     final JdbcTemplate jdbcTemplate;
 
-
-
-
-
-
     public List<StadiumResponse> getAllStadiums() {
-        String query = """
-                SELECT s.id,
-                       stadium_name,
-                       extra_time,
-                       profile_url,
-                       ST_X(location::geometry) AS longitude,
-                       ST_Y(location::geometry) AS latitude,
-                       count(f.id)              as num_of_fields
-                FROM stadiums s
-                         JOIN fields f on s.id = f.stadium_id
-                group by s.id, stadium_name, location, location;
-                """;
-
+        String query = "SELECT * FROM get_stadiums_view";
         return jdbcTemplate.query(query, (rs, _) -> new StadiumResponse(
                 UUID.fromString(rs.getString("id")),
                 rs.getString("stadium_name"),
