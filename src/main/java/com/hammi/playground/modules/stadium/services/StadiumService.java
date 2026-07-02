@@ -17,7 +17,6 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class StadiumService {
-    private final StadiumRepository stadiumRepository;
     final JdbcTemplate jdbcTemplate;
 
     public List<StadiumResponse> getAllStadiums() {
@@ -31,7 +30,5 @@ public class StadiumService {
                 rs.getShort("extra_time"),
                 rs.getShort("num_of_fields")
         ));
-
-
     }
 }
