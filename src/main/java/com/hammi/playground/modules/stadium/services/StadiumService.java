@@ -31,7 +31,7 @@ public class StadiumService {
 
     public List<FilterEventsResponse> filterEventsResponse(LocalDateTime time, Double latitude, Double longitude, Integer capacity) {
         return jdbcTemplate.query("SELECT * FROM filter_events_fn(CAST(? as timestamp),? ,?,CAST(? as smallint),?);", (rs, _) -> new FilterEventsResponse(rs.getString("stadium_id"), rs.getString("stadium_name"),
-                rs.getDouble("distance"), rs.getInt("capacity"), rs.getInt("field_id"),
+                rs.getDouble("distance"),  rs.getInt("field_id"),rs.getInt("capacity"),rs.getBigDecimal("field_cost"),
                 rs.getDouble("longitude"), rs.getDouble("latitude")), time, latitude, longitude, capacity,null);
     }
 }
