@@ -1,6 +1,7 @@
 package com.hammi.playground.modules.stadium.controllers;
 
 import com.hammi.playground.modules.stadium.dto.FieldResponse;
+import com.hammi.playground.modules.stadium.dto.FilterEventsResponse;
 import com.hammi.playground.modules.stadium.dto.StadiumResponse;
 import com.hammi.playground.modules.stadium.dto.WorkingDaysResponse;
 import com.hammi.playground.modules.stadium.services.FieldsService;
@@ -8,12 +9,11 @@ import com.hammi.playground.modules.stadium.services.StadiumService;
 import com.hammi.playground.modules.stadium.services.StadiumWorkingDaysService;
 import com.hammi.playground.util.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,5 +38,16 @@ public class StadiumController {
     @GetMapping("/{stadiumId}/working-days")
     public ResponseEntity<ApiResponse<List<WorkingDaysResponse>>> getStadiumWorkingDays(@PathVariable UUID stadiumId) {
         return ResponseEntity.ok().body(new ApiResponse<>(workingDaysService.getStadiumWorkingDays(stadiumId)));
+    }
+
+
+    @GetMapping("/filter")
+    public ResponseEntity<ApiResponse<List<FilterEventsResponse>>> filterEventsResponse(@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+                                                                                        LocalDateTime time,
+                                                                                        @RequestParam(required = false) Double latitude,
+                                                                                        @RequestParam(required = false) Double longitude,
+                                                                                        @RequestParam Integer capacity
+    ) {
+        return ResponseEntity.ok().body(new ApiResponse<>(stadiumService.filterEventsResponse(time, latitude, longitude, capacity)));
     }
 }
