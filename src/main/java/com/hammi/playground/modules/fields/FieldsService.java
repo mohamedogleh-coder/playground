@@ -28,7 +28,6 @@ public class FieldsService {
         return stadium.getFields().stream().map((field -> new FieldResponse(field.getId(), field.getCapacity(), field.getCost()))).toList();
     }
 
-
     public FieldResponse addField(UUID stadiumId, FieldRequest request) {
         var stadium = stadiumRepository.findStadiumWithFields(stadiumId).orElseThrow(() -> new NotFoundException("Stadium not exists"));
 
@@ -51,7 +50,6 @@ public class FieldsService {
         return objectMapper.createObjectNode();
     }
 
-
     public Integer bookEvent(Short fieldId, EventBookingRequest request) {
 
         var field = fieldRepository.findById(fieldId).orElseThrow(() -> new NotFoundException("Field not found"));
@@ -60,7 +58,5 @@ public class FieldsService {
         var savedEvent = eventBookingRepository.save(event);
         return savedEvent.getId();
     }
-
-
 }
 

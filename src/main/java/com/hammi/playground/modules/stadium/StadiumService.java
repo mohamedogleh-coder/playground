@@ -13,6 +13,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class StadiumService {
     final JdbcTemplate jdbcTemplate;
+    final StadiumRepository stadiumRepository;
 
     public List<StadiumsListResponse> getAllStadiums() {
         String query = "SELECT * FROM get_stadiums_view";
@@ -32,4 +33,5 @@ public class StadiumService {
                 rs.getInt("extra_time"), rs.getDouble("distance"), rs.getInt("field_id"), rs.getInt("capacity"), rs.getBigDecimal("field_cost"),
                 rs.getDouble("longitude"), rs.getDouble("latitude")), time, latitude, longitude, capacity, null);
     }
+
 }

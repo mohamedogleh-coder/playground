@@ -29,12 +29,12 @@ class FieldsController {
     }
 
     @GetMapping("/{fieldId}/events/{event_date}")
-    public ResponseEntity<ApiResponse<JsonNode>> getFiledEvents(@PathVariable Short fieldId, @PathVariable("event_date") LocalDate eventDate) {
+    public ResponseEntity<ApiResponse<JsonNode>> getFiledEvents(@PathVariable UUID stadiumId, @PathVariable Short fieldId, @PathVariable("event_date") LocalDate eventDate) {
         return ResponseEntity.ok().body(new ApiResponse<>(fieldsService.getFiledEvents(fieldId, eventDate)));
     }
 
-    @PostMapping("/{fieldId}/book-event")
-    public ResponseEntity<ApiResponse<Integer>> getFiledEvents(@PathVariable Short fieldId, @RequestBody @Valid EventBookingRequest request) {
+    @PostMapping("/{fieldId}/book")
+    public ResponseEntity<ApiResponse<Integer>> bookEvent(@PathVariable UUID stadiumId, @PathVariable Short fieldId, @RequestBody @Valid EventBookingRequest request) {
         return ResponseEntity.ok().body(new ApiResponse<>(fieldsService.bookEvent(fieldId, request)));
     }
 
