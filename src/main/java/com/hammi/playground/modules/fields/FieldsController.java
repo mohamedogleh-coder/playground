@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import tools.jackson.databind.JsonNode;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,7 +25,6 @@ class FieldsController {
 
     @PostMapping("/{fieldId}/book-event")
     public ResponseEntity<ApiResponse<Integer>> getFiledEvents(@PathVariable Short fieldId, @RequestBody @Valid EventBookingRequest request) {
-
         return ResponseEntity.ok().body(new ApiResponse<>(fieldsService.bookEvent(fieldId, request)));
     }
 

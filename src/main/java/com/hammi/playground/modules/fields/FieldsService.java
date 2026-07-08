@@ -28,6 +28,25 @@ public class FieldsService {
         return stadium.getFields().stream().map((field -> new FieldResponse(field.getId(), field.getCapacity(), field.getCost()))).toList();
     }
 
+
+    public FieldResponse addField(UUID stadiumId, FieldRequest request) {
+        var stadium = stadiumRepository.findStadiumWithFields(stadiumId).orElseThrow(() -> new NotFoundException("Stadium not exists"));
+
+        return stadium.getFields().stream().filter(field -> field.getCapacity()
+                        .equals(request.capacity()) && field.getCost().equals(request.cost())).findFirst().map(f ->
+                        new FieldResponse(
+                                f.getId(), f.getCapacity(), f.getCost()
+                        ))
+                .orElseGet(() -> {
+                    var newField = Field.builder().cost(request.cost()).capacity(request.capacity()).stadium(stadium).build();
+                    var savedField = fieldRepository.save(newField);
+                    return new FieldResponse(
+                            savedField.getId(), savedField.getCapacity(), savedField.getCost()
+                    );
+                });
+
+    }
+
     public JsonNode getFiledEvents(Short fieldId, LocalDate date) {
         String rawJsonStr = fieldRepository.getRawBookingTimeSlots(fieldId, date);
         try {
@@ -46,11 +65,10 @@ public class FieldsService {
         var field = fieldRepository.findById(fieldId).orElseThrow(() -> new NotFoundException("Field not found"));
         var event = EventBookings.builder().field(field).eventKey(request.generatedCode()).eventStart(request.startTime()).build();
 
-//        field.getEventBookings().add(event);
-
-
         var savedEvent = eventBookingRepository.save(event);
         return savedEvent.getId();
     }
+
+
 }
 

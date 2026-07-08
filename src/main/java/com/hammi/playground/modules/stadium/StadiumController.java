@@ -1,10 +1,11 @@
 package com.hammi.playground.modules.stadium;
 
+import com.hammi.playground.modules.fields.FieldRequest;
 import com.hammi.playground.modules.fields.FieldResponse;
 import com.hammi.playground.modules.working_days.WorkingDaysRequest;
 import com.hammi.playground.modules.working_days.WorkingDaysResponse;
 import com.hammi.playground.modules.fields.FieldsService;
-import com.hammi.playground.modules.working_days.StadiumWorkingDaysService;
+import com.hammi.playground.modules.working_days.WorkingDaysService;
 import com.hammi.playground.util.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class StadiumController {
     private final StadiumService stadiumService;
-    private final StadiumWorkingDaysService workingDaysService;
+    private final WorkingDaysService workingDaysService;
     private final FieldsService fieldsService;
 
     @GetMapping
@@ -32,6 +33,11 @@ public class StadiumController {
     @GetMapping("/{stadiumId}/fields")
     public ResponseEntity<ApiResponse<List<FieldResponse>>> getStadiumFields(@PathVariable UUID stadiumId) {
         return ResponseEntity.ok().body(new ApiResponse<>(fieldsService.getStadiumFields(stadiumId)));
+    }
+
+    @PostMapping("/{stadiumId}/addField")
+    public ResponseEntity<ApiResponse<FieldResponse>> addField(@PathVariable UUID stadiumId, @RequestBody @Valid FieldRequest request) {
+        return ResponseEntity.ok().body(new ApiResponse<>(fieldsService.addField(stadiumId, request)));
     }
 
     @GetMapping("/{stadiumId}/workingDays")

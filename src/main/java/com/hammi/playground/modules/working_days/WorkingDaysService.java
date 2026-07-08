@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
-public class StadiumWorkingDaysService {
+public class WorkingDaysService {
     private final StadiumRepository stadiumRepository;
     private final WorkingDaysRepository workingDaysRepository;
 
@@ -21,7 +21,6 @@ public class StadiumWorkingDaysService {
 
 
     public WorkingDaysResponse addWorkingDay(UUID stadiumId, WorkingDaysRequest request) {
-
         var stadium = stadiumRepository.findStadiumWithWorkingDays(stadiumId)
                 .orElseThrow(() -> new NotFoundException("Stadium not exists"));
 
