@@ -9,14 +9,24 @@ import org.springframework.web.bind.annotation.*;
 import tools.jackson.databind.JsonNode;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/fields")
+@RequestMapping("/stadiums/{stadiumId}/fields")
 class FieldsController {
-
     private final FieldsService fieldsService;
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<FieldResponse>>> getStadiumFields(@PathVariable UUID stadiumId) {
+        return ResponseEntity.ok().body(new ApiResponse<>(fieldsService.getStadiumFields(stadiumId)));
+    }
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<FieldResponse>> addField(@PathVariable UUID stadiumId, @RequestBody @Valid FieldRequest request) {
+        return ResponseEntity.ok().body(new ApiResponse<>(fieldsService.addField(stadiumId, request)));
+    }
 
     @GetMapping("/{fieldId}/events/{event_date}")
     public ResponseEntity<ApiResponse<JsonNode>> getFiledEvents(@PathVariable Short fieldId, @PathVariable("event_date") LocalDate eventDate) {

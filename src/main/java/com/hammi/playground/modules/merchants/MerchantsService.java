@@ -1,8 +1,11 @@
 package com.hammi.playground.modules.merchants;
 
+import com.hammi.playground.exceptions.ApiException;
 import com.hammi.playground.exceptions.NotFoundException;
 import com.hammi.playground.modules.stadium.StadiumRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,5 +74,59 @@ public class MerchantsService {
                 merchant.getProvider().getProviderName(),
                 merchant.getProvider().getProviderService()
         )).toList();
+    }
+    @Transactional
+    public MerchantResponse updateMerchant(UUID stadiumId, Short merchantId, MerchantRequest request) {
+
+        try {
+            var stadium = stadiumRepository.findStadiumWithMerchants(stadiumId)
+                    .orElseThrow(() -> new NotFoundException("Stadium not found"));
+
+            var merchant = stadium.getMerchants().stream()
+                    .filter(m -> m.getId().equals(merchantId))
+                    .findFirst()
+                    .orElseThrow(() -> new NotFoundException("Merchant not found"));
+
+            var provider = providerRepository.findById(request.providerId())
+                    .orElseThrow(() -> new NotFoundException("Provider not found"));
+
+            merchant.setMerchantNumber(request.merchantNumber());
+            merchant.setProvider(provider);
+
+            var savedMerchant = merchantRepository.saveAndFlush(merchant);
+
+            return new MerchantResponse(
+                    savedMerchant.getId(),
+                    savedMerchant.getMerchantNumber(),
+                    savedMerchant.getProvider().getProviderName(),
+                    savedMerchant.getProvider().getProviderService()
+            );
+
+        } catch (DataIntegrityViolationException e) {
+
+            if (e.getMessage().contains("stadium_merchant_unq")) {
+                throw new ApiException(
+                        "Merchant number " + request.merchantNumber() + " already exists"
+                );
+            }
+
+            throw e;
+        }
+    }
+
+    @Transactional
+    public void deleteMerchant(UUID stadiumId, Short merchantId) {
+
+        var stadium = stadiumRepository.findStadiumWithMerchants(stadiumId)
+                .orElseThrow(() -> new NotFoundException("Stadium not found"));
+
+        var merchant = stadium.getMerchants().stream()
+                .filter(m -> m.getId().equals(merchantId))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Merchant not found"));
+
+        stadium.getMerchants().remove(merchant);
+
+        stadiumRepository.save(stadium);
     }
 }
