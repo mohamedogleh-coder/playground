@@ -68,6 +68,14 @@ public class StadiumController {
                 ));
     }
 
+    @GetMapping("/{stadiumId}/merchants")
+    public ResponseEntity<ApiResponse<List<MerchantResponse>>> getStadiumMerchants(@PathVariable UUID stadiumId) {
+        return ResponseEntity.ok()
+                .body(new ApiResponse<>(
+                        merchantsService.getStadiumMerchants(stadiumId)
+                ));
+    }
+
 
     @GetMapping("/filter")
     public ResponseEntity<ApiResponse<List<FilteredStadiumsResponse>>> filterEventsResponse(@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")

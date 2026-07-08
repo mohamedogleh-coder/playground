@@ -60,4 +60,16 @@ public class MerchantsService {
                 })
                 .toList();
     }
+
+
+    public List<MerchantResponse> getStadiumMerchants(UUID stadiumId) {
+        var stadium = stadiumRepository.findStadiumWithMerchants(stadiumId)
+                .orElseThrow(() -> new NotFoundException("Stadium not found"));
+        return stadium.getMerchants().stream().map(merchant -> new MerchantResponse(
+                merchant.getId(),
+                merchant.getMerchantNumber(),
+                merchant.getProvider().getProviderName(),
+                merchant.getProvider().getProviderService()
+        )).toList();
+    }
 }
