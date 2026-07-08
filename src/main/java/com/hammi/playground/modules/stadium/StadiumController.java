@@ -2,7 +2,9 @@ package com.hammi.playground.modules.stadium;
 
 import com.hammi.playground.modules.fields.FieldRequest;
 import com.hammi.playground.modules.fields.FieldResponse;
-import com.hammi.playground.modules.working_days.WorkingDaysRequest;
+import com.hammi.playground.modules.merchants.MerchantResponse;
+import com.hammi.playground.modules.merchants.MerchantsListRequest;
+import com.hammi.playground.modules.merchants.MerchantsService;
 import com.hammi.playground.modules.working_days.WorkingDaysRequestList;
 import com.hammi.playground.modules.working_days.WorkingDaysResponse;
 import com.hammi.playground.modules.fields.FieldsService;
@@ -25,6 +27,7 @@ public class StadiumController {
     private final StadiumService stadiumService;
     private final WorkingDaysService workingDaysService;
     private final FieldsService fieldsService;
+    private final MerchantsService merchantsService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<StadiumsListResponse>>> getAllStadiums() {
@@ -54,6 +57,17 @@ public class StadiumController {
                         workingDaysService.addWorkingDay(stadiumId, request)
                 ));
     }
+
+
+    @PostMapping("/{stadiumId}/addMerchants")
+    public ResponseEntity<ApiResponse<List<MerchantResponse>>> addMerchants(@PathVariable UUID stadiumId, @RequestBody @Valid MerchantsListRequest request
+    ) {
+        return ResponseEntity.ok()
+                .body(new ApiResponse<>(
+                        merchantsService.addMerchants(stadiumId, request)
+                ));
+    }
+
 
     @GetMapping("/filter")
     public ResponseEntity<ApiResponse<List<FilteredStadiumsResponse>>> filterEventsResponse(@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")

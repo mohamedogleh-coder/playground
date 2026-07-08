@@ -11,12 +11,15 @@ import java.util.UUID;
 @Repository
 public interface StadiumRepository extends CrudRepository<Stadium, UUID> {
 
-    @Query("SELECT s FROM Stadium s JOIN  FETCH s.fields WHERE s.id=:stadiumId")
+    @Query("SELECT s FROM Stadium s LEFT JOIN FETCH s.fields WHERE s.id=:stadiumId")
     Optional<Stadium> findStadiumWithFields(@Param("stadiumId") UUID stadiumId);
 
-    @Query("SELECT s FROM Stadium s JOIN  FETCH s.workingDays WHERE s.id=:stadiumId")
+    @Query("SELECT s FROM Stadium s LEFT JOIN FETCH s.workingDays WHERE s.id=:stadiumId")
     Optional<Stadium> findStadiumWithWorkingDays(@Param("stadiumId") UUID stadiumId);
 
+
+    @Query("SELECT s FROM Stadium s LEFT JOIN FETCH s.merchants WHERE s.id=:stadiumId")
+    Optional<Stadium> findStadiumWithMerchants(@Param("stadiumId") UUID stadiumId);
 
 
 }
