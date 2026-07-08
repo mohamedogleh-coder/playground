@@ -1,5 +1,7 @@
-package com.hammi.playground.modules.stadium.entity;
+package com.hammi.playground.modules.fields;
 
+import com.hammi.playground.modules.events.EventBookings;
+import com.hammi.playground.modules.stadium.Stadium;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,5 +35,5 @@ public class Field {
 
     @Builder.Default
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "field")
-    private List<Event> events = new ArrayList<>();
+    private List<EventBookings> eventBookings = new ArrayList<>();
 }

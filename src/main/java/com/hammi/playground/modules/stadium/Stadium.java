@@ -1,12 +1,11 @@
-package com.hammi.playground.modules.stadium.entity;
+package com.hammi.playground.modules.stadium;
 
+import com.hammi.playground.modules.fields.Field;
+import com.hammi.playground.modules.working_days.StadiumWorkingDay;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 import org.locationtech.jts.geom.Point;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

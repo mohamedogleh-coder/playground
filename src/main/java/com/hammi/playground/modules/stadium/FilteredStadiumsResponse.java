@@ -1,10 +1,11 @@
-package com.hammi.playground.modules.stadium.dto;
+package com.hammi.playground.modules.stadium;
 
 import java.math.BigDecimal;
 
-public record FilterEventsResponse(
+public record FilteredStadiumsResponse(
         String stadiumId,
         String stadiumName,
+        int extraTime,
         Double distance,
         Integer fieldId,
         Integer capacity,

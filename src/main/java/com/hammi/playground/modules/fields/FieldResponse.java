@@ -1,4 +1,4 @@
-package com.hammi.playground.modules.stadium.dto;
+package com.hammi.playground.modules.fields;
 
 import java.math.BigDecimal;
 

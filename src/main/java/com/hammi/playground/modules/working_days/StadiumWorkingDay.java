@@ -1,4 +1,5 @@
-package com.hammi.playground.modules.stadium.entity;
+package com.hammi.playground.modules.working_days;
+import com.hammi.playground.modules.stadium.Stadium;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,13 +1,10 @@
-package com.hammi.playground.modules.stadium.repo;
+package com.hammi.playground.modules.stadium;
 
-import com.hammi.playground.modules.stadium.dto.StadiumResponse;
-import com.hammi.playground.modules.stadium.entity.Stadium;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 

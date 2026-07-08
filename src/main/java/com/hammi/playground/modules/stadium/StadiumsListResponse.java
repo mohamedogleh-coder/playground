@@ -1,14 +1,13 @@
-package com.hammi.playground.modules.stadium.dto;
+package com.hammi.playground.modules.stadium;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.time.Duration;
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-public class StadiumResponse {
+public class StadiumsListResponse {
     private UUID id;
     private String stadiumName;
     private Double latitude;

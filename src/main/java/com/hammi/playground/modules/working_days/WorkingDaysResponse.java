@@ -1,4 +1,4 @@
-package com.hammi.playground.modules.stadium.dto;
+package com.hammi.playground.modules.working_days;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;

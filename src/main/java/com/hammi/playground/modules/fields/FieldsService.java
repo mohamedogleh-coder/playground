@@ -1,10 +1,11 @@
-package com.hammi.playground.modules.stadium.services;
+package com.hammi.playground.modules.fields;
 
 import com.hammi.playground.exceptions.ApiException;
 import com.hammi.playground.exceptions.NotFoundException;
-import com.hammi.playground.modules.stadium.dto.*;
-import com.hammi.playground.modules.stadium.repo.FieldRepository;
-import com.hammi.playground.modules.stadium.repo.StadiumRepository;
+import com.hammi.playground.modules.events.EventBookingRequest;
+import com.hammi.playground.modules.events.EventBookings;
+import com.hammi.playground.modules.events.EventBookingRepository;
+import com.hammi.playground.modules.stadium.StadiumRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.JsonNode;
@@ -20,6 +21,7 @@ public class FieldsService {
     private final FieldRepository fieldRepository;
     private final ObjectMapper objectMapper;
     private final StadiumRepository stadiumRepository;
+    private final EventBookingRepository eventBookingRepository;
 
     public List<FieldResponse> getStadiumFields(UUID stadiumId) {
         var stadium = stadiumRepository.findStadiumWithFields(stadiumId).orElseThrow(() -> new NotFoundException("Stadium not exists"));
@@ -38,4 +40,17 @@ public class FieldsService {
         return objectMapper.createObjectNode();
     }
 
+
+    public Integer bookEvent(Short fieldId, EventBookingRequest request) {
+
+        var field = fieldRepository.findById(fieldId).orElseThrow(() -> new NotFoundException("Field not found"));
+        var event = EventBookings.builder().field(field).eventKey(request.generatedCode()).eventStart(request.startTime()).build();
+
+//        field.getEventBookings().add(event);
+
+
+        var savedEvent = eventBookingRepository.save(event);
+        return savedEvent.getId();
+    }
 }
+
