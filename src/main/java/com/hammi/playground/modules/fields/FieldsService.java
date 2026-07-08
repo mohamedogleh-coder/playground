@@ -32,19 +32,11 @@ public class FieldsService {
     public FieldResponse addField(UUID stadiumId, FieldRequest request) {
         var stadium = stadiumRepository.findStadiumWithFields(stadiumId).orElseThrow(() -> new NotFoundException("Stadium not exists"));
 
-        return stadium.getFields().stream().filter(field -> field.getCapacity()
-                        .equals(request.capacity()) && field.getCost().equals(request.cost())).findFirst().map(f ->
-                        new FieldResponse(
-                                f.getId(), f.getCapacity(), f.getCost()
-                        ))
-                .orElseGet(() -> {
-                    var newField = Field.builder().cost(request.cost()).capacity(request.capacity()).stadium(stadium).build();
-                    var savedField = fieldRepository.save(newField);
-                    return new FieldResponse(
-                            savedField.getId(), savedField.getCapacity(), savedField.getCost()
-                    );
-                });
-
+        var newField = Field.builder().cost(request.cost()).capacity(request.capacity()).stadium(stadium).build();
+        var savedField = fieldRepository.save(newField);
+        return new FieldResponse(
+                savedField.getId(), savedField.getCapacity(), savedField.getCost()
+        );
     }
 
     public JsonNode getFiledEvents(Short fieldId, LocalDate date) {
