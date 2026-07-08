@@ -3,6 +3,7 @@ package com.hammi.playground.modules.stadium;
 import com.hammi.playground.modules.fields.FieldRequest;
 import com.hammi.playground.modules.fields.FieldResponse;
 import com.hammi.playground.modules.working_days.WorkingDaysRequest;
+import com.hammi.playground.modules.working_days.WorkingDaysRequestList;
 import com.hammi.playground.modules.working_days.WorkingDaysResponse;
 import com.hammi.playground.modules.fields.FieldsService;
 import com.hammi.playground.modules.working_days.WorkingDaysService;
@@ -45,9 +46,13 @@ public class StadiumController {
         return ResponseEntity.ok().body(new ApiResponse<>(workingDaysService.getStadiumWorkingDays(stadiumId)));
     }
 
-    @PostMapping("/{stadiumId}/addWorkingDay")
-    public ResponseEntity<ApiResponse<WorkingDaysResponse>> addWorkingDay(@PathVariable UUID stadiumId, @RequestBody @Valid WorkingDaysRequest request) {
-        return ResponseEntity.ok().body(new ApiResponse<>(workingDaysService.addWorkingDay(stadiumId, request)));
+    @PostMapping("/{stadiumId}/addWorkingDays")
+    public ResponseEntity<ApiResponse<List<WorkingDaysResponse>>> addWorkingDay(@PathVariable UUID stadiumId, @RequestBody @Valid WorkingDaysRequestList request
+    ) {
+        return ResponseEntity.ok()
+                .body(new ApiResponse<>(
+                        workingDaysService.addWorkingDay(stadiumId, request)
+                ));
     }
 
     @GetMapping("/filter")

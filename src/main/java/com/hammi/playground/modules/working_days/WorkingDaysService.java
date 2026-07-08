@@ -20,41 +20,82 @@ public class WorkingDaysService {
     }
 
 
-    public WorkingDaysResponse addWorkingDay(UUID stadiumId, WorkingDaysRequest request) {
+    public List<WorkingDaysResponse> addWorkingDay(UUID stadiumId, WorkingDaysRequestList requests) {
+
         var stadium = stadiumRepository.findStadiumWithWorkingDays(stadiumId)
                 .orElseThrow(() -> new NotFoundException("Stadium not exists"));
 
-        return stadium.getWorkingDays().stream()
-                .filter(day -> day.getDayOfWeek().equals(request.dayOfWeek()))
-                .findFirst()
-                .map(day -> new WorkingDaysResponse(
-                        day.getId(),
-                        day.getDayOfWeek(),
-                        day.getOpeningTime(),
-                        day.getClosingTime(),
-                        day.getIsOpen()
-                ))
-                .orElseGet(() -> {
+        return requests.workingDays().stream()
+                .map(request -> stadium.getWorkingDays().stream()
+                        .filter(day -> day.getDayOfWeek().equals(request.dayOfWeek()))
+                        .findFirst()
+                        .map(day -> new WorkingDaysResponse(
+                                day.getId(),
+                                day.getDayOfWeek(),
+                                day.getOpeningTime(),
+                                day.getClosingTime(),
+                                day.getIsOpen()
+                        ))
+                        .orElseGet(() -> {
 
-                    var workingDay = StadiumWorkingDay.builder()
-                            .dayOfWeek(request.dayOfWeek())
-                            .openingTime(request.openingTime())
-                            .closingTime(request.closingTime())
-                            .isOpen(request.isOpen())
-                            .stadium(stadium)
-                            .build();
+                            var workingDay = StadiumWorkingDay.builder()
+                                    .dayOfWeek(request.dayOfWeek())
+                                    .openingTime(request.openingTime())
+                                    .closingTime(request.closingTime())
+                                    .isOpen(request.isOpen())
+                                    .stadium(stadium)
+                                    .build();
 
-                    var savedWorkingDay = workingDaysRepository.save(workingDay);
+                            var savedWorkingDay = workingDaysRepository.save(workingDay);
 
-                    return new WorkingDaysResponse(
-                            savedWorkingDay.getId(),
-                            savedWorkingDay.getDayOfWeek(),
-                            savedWorkingDay.getOpeningTime(),
-                            savedWorkingDay.getClosingTime(),
-                            savedWorkingDay.getIsOpen()
-                    );
-                });
+                            return new WorkingDaysResponse(
+                                    savedWorkingDay.getId(),
+                                    savedWorkingDay.getDayOfWeek(),
+                                    savedWorkingDay.getOpeningTime(),
+                                    savedWorkingDay.getClosingTime(),
+                                    savedWorkingDay.getIsOpen()
+                            );
+                        }))
+                .toList();
     }
+
+//
+//    public WorkingDaysResponse addWorkingDay(UUID stadiumId, WorkingDaysRequestList requests) {
+//        var stadium = stadiumRepository.findStadiumWithWorkingDays(stadiumId)
+//                .orElseThrow(() -> new NotFoundException("Stadium not exists"));
+//
+//        return stadium.getWorkingDays().stream()
+//                .filter(day -> day.getDayOfWeek().equals(request.dayOfWeek()))
+//                .findFirst()
+//                .map(day -> new WorkingDaysResponse(
+//                        day.getId(),
+//                        day.getDayOfWeek(),
+//                        day.getOpeningTime(),
+//                        day.getClosingTime(),
+//                        day.getIsOpen()
+//                ))
+//                .orElseGet(() -> {
+//
+//                    var workingDay = StadiumWorkingDay.builder()
+//                            .dayOfWeek(request.dayOfWeek())
+//                            .openingTime(request.openingTime())
+//                            .closingTime(request.closingTime())
+//                            .isOpen(request.isOpen())
+//                            .stadium(stadium)
+//                            .build();
+//
+//                    var savedWorkingDay = workingDaysRepository.save(workingDay);
+//
+//                    return new WorkingDaysResponse(
+//                            savedWorkingDay.getId(),
+//                            savedWorkingDay.getDayOfWeek(),
+//                            savedWorkingDay.getOpeningTime(),
+//                            savedWorkingDay.getClosingTime(),
+//                            savedWorkingDay.getIsOpen()
+//                    );
+//                });
+//    }
+
 
 
 }
