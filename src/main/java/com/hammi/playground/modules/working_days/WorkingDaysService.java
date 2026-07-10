@@ -16,7 +16,7 @@ public class WorkingDaysService {
 
     public List<WorkingDaysResponse> getStadiumWorkingDays(UUID stadiumId) {
         var stadium = stadiumRepository.findStadiumWithWorkingDays(stadiumId).orElseThrow(() -> new NotFoundException("Stadium not exists"));
-        return stadium.getWorkingDays().stream().map((day -> new WorkingDaysResponse(day.getId(), day.getDayOfWeek(), day.getOpeningTime(), day.getOpeningTime(), day.getIsOpen()))).toList();
+        return stadium.getWorkingDays().stream().map((day -> new WorkingDaysResponse(day.getId(), day.getDayOfWeek(), day.getOpeningTime(), day.getClosingTime(), day.getIsOpen()))).toList();
     }
 
 

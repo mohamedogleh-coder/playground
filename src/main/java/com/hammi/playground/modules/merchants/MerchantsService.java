@@ -3,7 +3,6 @@ package com.hammi.playground.modules.merchants;
 import com.hammi.playground.exceptions.ApiException;
 import com.hammi.playground.exceptions.NotFoundException;
 import com.hammi.playground.modules.stadium.StadiumRepository;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -39,6 +38,7 @@ public class MerchantsService {
                             .map(merchant -> new MerchantResponse(
                                     merchant.getId(),
                                     merchant.getMerchantNumber(),
+                                    merchant.getProvider().getId(),
                                     merchant.getProvider().getProviderName(),
                                     merchant.getProvider().getProviderService()
                             ))
@@ -55,6 +55,7 @@ public class MerchantsService {
                                 return new MerchantResponse(
                                         savedMerchant.getId(),
                                         savedMerchant.getMerchantNumber(),
+                                        savedMerchant.getProvider().getId(),
                                         savedMerchant.getProvider().getProviderName(),
                                         savedMerchant.getProvider().getProviderService()
                                 );
@@ -71,10 +72,12 @@ public class MerchantsService {
         return stadium.getMerchants().stream().map(merchant -> new MerchantResponse(
                 merchant.getId(),
                 merchant.getMerchantNumber(),
+                merchant.getProvider().getId(),
                 merchant.getProvider().getProviderName(),
                 merchant.getProvider().getProviderService()
         )).toList();
     }
+
     @Transactional
     public MerchantResponse updateMerchant(UUID stadiumId, Short merchantId, MerchantRequest request) {
 
@@ -98,6 +101,7 @@ public class MerchantsService {
             return new MerchantResponse(
                     savedMerchant.getId(),
                     savedMerchant.getMerchantNumber(),
+                    savedMerchant.getProvider().getId(),
                     savedMerchant.getProvider().getProviderName(),
                     savedMerchant.getProvider().getProviderService()
             );
