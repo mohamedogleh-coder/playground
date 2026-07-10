@@ -21,4 +21,6 @@ public interface StadiumRepository extends CrudRepository<Stadium, UUID> {
     @Query("SELECT s FROM Stadium s LEFT JOIN FETCH s.merchants m JOIN FETCH m.provider WHERE s.id=:stadiumId")
     Optional<Stadium> findStadiumWithMerchants(@Param("stadiumId") UUID stadiumId);
 
+
+
 }

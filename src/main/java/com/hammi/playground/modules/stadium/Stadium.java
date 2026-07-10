@@ -1,6 +1,7 @@
 package com.hammi.playground.modules.stadium;
 
 import com.hammi.playground.modules.fields.Field;
+import com.hammi.playground.modules.managers.StadiumManager;
 import com.hammi.playground.modules.merchants.StadiumMerchant;
 import com.hammi.playground.modules.working_days.StadiumWorkingDay;
 import jakarta.persistence.*;
@@ -48,4 +49,8 @@ public class Stadium {
     @Builder.Default
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "stadium")
     private List<StadiumMerchant> merchants = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "stadium")
+    private List<StadiumManager> managers = new ArrayList<>();
 }
