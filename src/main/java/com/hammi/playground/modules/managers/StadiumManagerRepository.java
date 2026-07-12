@@ -12,5 +12,5 @@ import java.util.UUID;
 @Repository
 public interface StadiumManagerRepository extends JpaRepository<StadiumManager, UUID> {
     @Query("SELECT m FROM StadiumManager m JOIN FETCH m.stadium WHERE m.managerId=:managerId")
-    List<StadiumManager> findStadiumManagerByManagerId(UUID managerId);
+    Optional<StadiumManager> findStadiumManagerByManagerId(UUID managerId);
 }

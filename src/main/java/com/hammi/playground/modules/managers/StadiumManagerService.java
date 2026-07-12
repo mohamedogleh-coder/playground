@@ -19,15 +19,14 @@ public class StadiumManagerService {
     private final StadiumRepository stadiumRepository;
 
 
-    public List<StadiumResponse> getStadiumByManagerId(UUID managerId) {
-        var stadiums = managerRepository.findStadiumManagerByManagerId(managerId);
+    public StadiumResponse getStadiumByManagerId(UUID managerId) {
+        var stadium = managerRepository.findStadiumManagerByManagerId(managerId).orElse(null);
 
-        return stadiums.stream().map(stadium ->
-                new StadiumResponse(stadium.getStadium().getId(), stadium.getStadium().getStadiumName(),
-                        stadium.getStadium().getLatitude(),
-                        stadium.getStadium().getLongitude(),
-                        stadium.getStadium().getExtraTime(),
-                        stadium.getStadium().getProfileUrl())).toList();
+        return new StadiumResponse(stadium.getStadium().getId(), stadium.getStadium().getStadiumName(),
+                stadium.getStadium().getLatitude(),
+                stadium.getStadium().getLongitude(),
+                stadium.getStadium().getExtraTime(),
+                stadium.getStadium().getProfileUrl());
 
     }
 

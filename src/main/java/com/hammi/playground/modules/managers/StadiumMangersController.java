@@ -18,7 +18,7 @@ public class StadiumMangersController {
     private final StadiumManagerService stadiumManagerService;
 
     @GetMapping("/{managerId}")
-    public ResponseEntity<ApiResponse<List<StadiumResponse>>> getStadiumByManagerId(@PathVariable UUID managerId) {
+    public ResponseEntity<ApiResponse<StadiumResponse>> getStadiumByManagerId(@PathVariable UUID managerId) {
         return ResponseEntity.ok().body(new ApiResponse<>(stadiumManagerService.getStadiumByManagerId(managerId)));
     }
 
