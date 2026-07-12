@@ -7,7 +7,9 @@ import com.hammi.playground.modules.events.EventBookings;
 import com.hammi.playground.modules.events.EventBookingRepository;
 import com.hammi.playground.modules.stadium.StadiumRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
@@ -22,6 +24,8 @@ public class FieldsService {
     private final ObjectMapper objectMapper;
     private final StadiumRepository stadiumRepository;
     private final EventBookingRepository eventBookingRepository;
+    private final JdbcTemplate jdbcTemplate;
+
 
     public List<FieldResponse> getStadiumFields(UUID stadiumId) {
         var stadium = stadiumRepository.findStadiumWithFields(stadiumId).orElseThrow(() -> new NotFoundException("Stadium not exists"));
@@ -38,16 +42,38 @@ public class FieldsService {
         );
     }
 
-    public JsonNode getFiledEvents(Short fieldId, LocalDate date) {
-        String rawJsonStr = fieldRepository.getRawBookingTimeSlots(fieldId, date);
-        try {
-            if (rawJsonStr != null) {
-                return objectMapper.readTree(rawJsonStr);
-            }
-        } catch (Exception e) {
-            throw new ApiException(e.getMessage());
-        }
-        return objectMapper.createObjectNode();
+    public FieldEventsResponse getFieldEvents(Short fieldId, LocalDate date) {
+        return jdbcTemplate.queryForObject(
+                """
+                        SELECT 
+                            field_id,
+                            capacity,
+                            cost,
+                            slots::text
+                        FROM get_field_events_fn(
+                            CAST(? AS date),
+                            CAST(? AS smallint)
+                        )
+                        """,
+                (rs, rowNum) -> {
+                    String slotsJson = rs.getString("slots");
+
+                    List<TimeSlotsResponse> slots =
+                            objectMapper.readValue(
+                                    slotsJson,
+                                    new TypeReference<List<TimeSlotsResponse>>() {
+                                    }
+                            );
+
+                    return new FieldEventsResponse(
+                            rs.getShort("field_id"),
+                            rs.getShort("capacity"),
+                            rs.getBigDecimal("cost"),
+                            slots);
+                },
+                date,
+                fieldId
+        );
     }
 
     public Integer bookEvent(Short fieldId, EventBookingRequest request) {

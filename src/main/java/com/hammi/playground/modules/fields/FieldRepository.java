@@ -9,6 +9,7 @@ import java.time.LocalDate;
 
 @Repository
 public interface FieldRepository extends JpaRepository<Field, Short> {
-    @Query(value = "SELECT generate_booking_time_seq_fn(CAST(:fieldId AS smallint), CAST(:date AS date))", nativeQuery = true)
-    String getRawBookingTimeSlots(@Param("fieldId") Short fieldId, @Param("date") LocalDate date);
+
+    @Query(value = "SELECT get_field_events_fn(CAST(:date AS date),CAST(:fieldId AS smallint))", nativeQuery = true)
+    String getFieldEvents(@Param("fieldId") Short fieldId, @Param("date") LocalDate date);
 }

@@ -5,8 +5,8 @@ import java.util.UUID;
 public record StadiumResponse(
         UUID stadiumId,
         String stadiumName,
-        double latitude,
-        double longitude,
+        Double latitude,
+        Double longitude,
         int extraTime,
         String profileUrl
 ) {

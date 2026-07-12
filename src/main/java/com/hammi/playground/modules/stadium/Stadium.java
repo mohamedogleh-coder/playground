@@ -37,6 +37,14 @@ public class Stadium {
     @Column(columnDefinition = "geography(Point,4326)", name = "location")
     private Point location;
 
+    public Double getLatitude() {
+        return location != null ? location.getY() : null;
+    }
+
+    public Double getLongitude() {
+        return location != null ? location.getX() : null;
+    }
+
     @Builder.Default
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "stadium")
     private List<Field> fields = new ArrayList<>();

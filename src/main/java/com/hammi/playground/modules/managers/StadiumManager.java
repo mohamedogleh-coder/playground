@@ -41,7 +41,6 @@ public class StadiumManager {
     @Column(name = "date_joined", nullable = false)
     private LocalDate dateJoined;
 
-
     @PrePersist
     public void init() {
         dateJoined = LocalDate.now();
