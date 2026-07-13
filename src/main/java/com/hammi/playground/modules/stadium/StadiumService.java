@@ -64,6 +64,7 @@ public class StadiumService {
 
             stadium.setStadiumName(regRequest.stadiumName());
             stadium.setExtraTime(regRequest.extraTime());
+            stadium.setProfileUrl(regRequest.profileUrl());
             stadium.setLocation(point);
 
             var savedStadium = stadiumRepository.save(stadium);

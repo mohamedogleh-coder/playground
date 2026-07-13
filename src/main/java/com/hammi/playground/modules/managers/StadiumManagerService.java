@@ -22,12 +22,14 @@ public class StadiumManagerService {
     public StadiumResponse getStadiumByManagerId(UUID managerId) {
         var stadium = managerRepository.findStadiumManagerByManagerId(managerId).orElse(null);
 
-        return new StadiumResponse(stadium.getStadium().getId(), stadium.getStadium().getStadiumName(),
-                stadium.getStadium().getLatitude(),
-                stadium.getStadium().getLongitude(),
-                stadium.getStadium().getExtraTime(),
-                stadium.getStadium().getProfileUrl());
-
+        if (stadium != null) {
+            return new StadiumResponse(stadium.getStadium().getId(), stadium.getStadium().getStadiumName(),
+                    stadium.getStadium().getLatitude(),
+                    stadium.getStadium().getLongitude(),
+                    stadium.getStadium().getExtraTime(),
+                    stadium.getStadium().getProfileUrl());
+        }
+        return null;
     }
 
     public UUID addStadiumManager(UUID stadiumId, UUID managerId) {
