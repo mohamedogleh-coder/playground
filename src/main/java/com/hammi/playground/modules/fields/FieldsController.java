@@ -29,7 +29,7 @@ class FieldsController {
     }
 
     @GetMapping("/{fieldId}/events/{event_date}")
-    public ResponseEntity<ApiResponse<FieldEventsResponse>> getFiledEvents(@PathVariable Short fieldId, @PathVariable("event_date") LocalDate eventDate) {
+    public ResponseEntity<ApiResponse<List<TimeSlotsResponse>>> getFiledEvents(@PathVariable Short fieldId, @PathVariable("event_date") LocalDate eventDate) {
         return ResponseEntity.ok().body(new ApiResponse<>(fieldsService.getFieldEvents(fieldId, eventDate)));
     }
 

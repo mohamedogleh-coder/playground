@@ -6,6 +6,6 @@ record TimeSlotsResponse(
         String endTime,
         Short eventId,
         Integer eventKey,
-        boolean isAvailable
+        String eventStatus
 ) {
 }

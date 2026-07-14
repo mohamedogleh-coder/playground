@@ -42,34 +42,22 @@ public class FieldsService {
         );
     }
 
-    public FieldEventsResponse getFieldEvents(Short fieldId, LocalDate date) {
+    public List<TimeSlotsResponse> getFieldEvents(Short fieldId, LocalDate date) {
         return jdbcTemplate.queryForObject(
                 """
-                        SELECT 
-                            field_id,
-                            capacity,
-                            cost,
-                            slots::text
-                        FROM get_field_events_fn(
+                        SELECT get_field_events_fn(
                             CAST(? AS date),
                             CAST(? AS smallint)
-                        )
+                        ) AS slots
                         """,
                 (rs, rowNum) -> {
                     String slotsJson = rs.getString("slots");
 
-                    List<TimeSlotsResponse> slots =
-                            objectMapper.readValue(
-                                    slotsJson,
-                                    new TypeReference<List<TimeSlotsResponse>>() {
-                                    }
-                            );
-
-                    return new FieldEventsResponse(
-                            rs.getShort("field_id"),
-                            rs.getShort("capacity"),
-                            rs.getBigDecimal("cost"),
-                            slots);
+                    return objectMapper.readValue(
+                            slotsJson,
+                            new TypeReference<List<TimeSlotsResponse>>() {
+                            }
+                    );
                 },
                 date,
                 fieldId
