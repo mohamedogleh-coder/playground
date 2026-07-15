@@ -33,4 +33,9 @@ public class EventController {
     public ResponseEntity<ApiResponse<Integer>> takeAnotherHalf(@PathVariable Integer eventId, @RequestBody @Valid EventTakeHalfRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(eventService.takeAnotherHalf(eventId, request)));
     }
+
+    @GetMapping("/{eventId}")
+    public ResponseEntity<ApiResponse<EventInformationResponse>> getEventInformation(@PathVariable Integer eventId) {
+        return ResponseEntity.ok().body(new ApiResponse<>(eventService.getEventInformation(eventId)));
+    }
 }

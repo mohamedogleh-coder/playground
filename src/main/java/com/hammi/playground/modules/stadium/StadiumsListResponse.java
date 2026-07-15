@@ -14,5 +14,6 @@ public class StadiumsListResponse {
     private Double longitude;
     private String profileUrl;
     private short extraTime;
+    private boolean halfBooking;
     private short numberOfFields;
 }

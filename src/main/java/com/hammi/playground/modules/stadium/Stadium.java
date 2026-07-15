@@ -34,6 +34,9 @@ public class Stadium {
     @Column(name = "profile_url")
     private String profileUrl;
 
+    @Column(name = "half_booking")
+    private boolean halfBooking;
+
     @Column(columnDefinition = "geography(Point,4326)", name = "location")
     private Point location;
 

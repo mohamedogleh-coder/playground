@@ -24,7 +24,7 @@ public class StadiumService {
 
     public List<StadiumsListResponse> getAllStadiums() {
         String query = "SELECT * FROM get_stadiums_view";
-        return jdbcTemplate.query(query, (rs, _) -> new StadiumsListResponse(UUID.fromString(rs.getString("id")), rs.getString("stadium_name"), rs.getDouble("longitude"), rs.getDouble("latitude"), rs.getString("profile_url"), rs.getShort("extra_time"), rs.getShort("num_of_fields")));
+        return jdbcTemplate.query(query, (rs, _) -> new StadiumsListResponse(UUID.fromString(rs.getString("id")), rs.getString("stadium_name"), rs.getDouble("longitude"), rs.getDouble("latitude"), rs.getString("profile_url"), rs.getShort("extra_time"), rs.getBoolean("half_booking"), rs.getShort("num_of_fields")));
     }
 
     public List<FilteredStadiumsResponse> filterEventsResponse(LocalDateTime time, Double latitude, Double longitude, Integer capacity) {
@@ -37,7 +37,7 @@ public class StadiumService {
 
             Point point = regRequest.latitude() != null && regRequest.longitude() != null ? geometryFactory.createPoint(new Coordinate(regRequest.longitude(), regRequest.latitude())) : null;
 
-            var stadium = Stadium.builder().stadiumName(regRequest.stadiumName()).extraTime(regRequest.extraTime()).profileUrl(regRequest.profileUrl()).location(point).build();
+            var stadium = Stadium.builder().stadiumName(regRequest.stadiumName()).extraTime(regRequest.extraTime()).halfBooking(regRequest.halfBooking()).profileUrl(regRequest.profileUrl()).location(point).build();
 
             var manager = StadiumManager.builder().managerId(regRequest.managerId()).stadium(stadium).build();
 
@@ -59,12 +59,12 @@ public class StadiumService {
 
             GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
 
-            Point point = regRequest.latitude() != null && regRequest.longitude() != null ?
-                    geometryFactory.createPoint(new Coordinate(regRequest.longitude(), regRequest.latitude())) : null;
+            Point point = regRequest.latitude() != null && regRequest.longitude() != null ? geometryFactory.createPoint(new Coordinate(regRequest.longitude(), regRequest.latitude())) : null;
 
             stadium.setStadiumName(regRequest.stadiumName());
             stadium.setExtraTime(regRequest.extraTime());
             stadium.setProfileUrl(regRequest.profileUrl());
+            stadium.setHalfBooking(regRequest.halfBooking());
             stadium.setLocation(point);
 
             var savedStadium = stadiumRepository.save(stadium);

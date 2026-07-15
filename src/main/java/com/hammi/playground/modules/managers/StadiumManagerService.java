@@ -27,6 +27,7 @@ public class StadiumManagerService {
                     stadium.getStadium().getLatitude(),
                     stadium.getStadium().getLongitude(),
                     stadium.getStadium().getExtraTime(),
+                    stadium.getStadium().isHalfBooking(),
                     stadium.getStadium().getProfileUrl());
         }
         return null;

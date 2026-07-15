@@ -8,6 +8,7 @@ public record StadiumResponse(
         Double latitude,
         Double longitude,
         int extraTime,
+        boolean ha,
         String profileUrl
 ) {
 }

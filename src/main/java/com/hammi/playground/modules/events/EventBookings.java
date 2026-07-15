@@ -43,6 +43,10 @@ public class EventBookings {
     @EqualsAndHashCode.Include
     private String eventStatus;
 
+    @Column(name = "extra_time", nullable = false)
+    @EqualsAndHashCode.Include
+    private Short extraTime;
+
     @Builder.Default
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "event")
     private List<EventBookingPayment> bookingPayments = new ArrayList<>();

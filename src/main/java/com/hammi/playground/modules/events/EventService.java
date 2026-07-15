@@ -49,7 +49,6 @@ public class EventService {
         );
     }
 
-
     public int takeEvent(Short fieldId, EventBookingRequest request) {
         var field = fieldRepository.findById(fieldId)
                 .orElseThrow(() -> new NotFoundException("Field not found"));
@@ -111,7 +110,6 @@ public class EventService {
         return savedEvent.getId();
     }
 
-
     public int takeAnotherHalf(Integer eventId, @Valid EventTakeHalfRequest request) {
 
         var event = eventBookingRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Event not found"));
@@ -148,5 +146,34 @@ public class EventService {
         var updatedEvent = eventBookingRepository.save(event);
         return updatedEvent.getId();
     }
+
+    public EventInformationResponse getEventInformation(Integer eventId) {
+
+        var event = eventBookingRepository.getEventWithEventPayments(eventId)
+                .orElseThrow(() -> new NotFoundException("Event does not exist"));
+
+        var payments = event.getBookingPayments()
+                .stream()
+                .map(payment -> new EventPayments(
+                        payment.getMerchantNumber(),
+                        payment.getPaymentMethod(),
+                        payment.getAmountPaid(),
+                        payment.getDiscountAmount(),
+                        payment.getPaidAt()
+                ))
+                .toList();
+
+        return new EventInformationResponse(
+                event.getId(),
+                event.getEventStart(),
+                event.getEventEnd(),
+                event.getEventKey(),
+                event.getExtraTime(),
+                event.getEventStatus(),
+                event.getRemaining(),
+                payments
+        );
+    }
+
 
 }
