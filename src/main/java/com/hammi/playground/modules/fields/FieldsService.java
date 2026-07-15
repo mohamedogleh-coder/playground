@@ -19,11 +19,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class FieldsService {
     private final FieldRepository fieldRepository;
-    private final ObjectMapper objectMapper;
     private final StadiumRepository stadiumRepository;
-    private final EventBookingRepository eventBookingRepository;
-    private final JdbcTemplate jdbcTemplate;
-
 
     public List<FieldResponse> getStadiumFields(UUID stadiumId) {
         var stadium = stadiumRepository.findStadiumWithFields(stadiumId).orElseThrow(() -> new NotFoundException("Stadium not exists"));
@@ -40,65 +36,5 @@ public class FieldsService {
         );
     }
 
-    public List<TimeSlotsResponse> getFieldEvents(Short fieldId, LocalDate date) {
-        return jdbcTemplate.queryForObject(
-                """
-                        SELECT get_field_events_fn(
-                            CAST(? AS date),
-                            CAST(? AS smallint)
-                        ) AS slots
-                        """,
-                (rs, rowNum) -> {
-                    String slotsJson = rs.getString("slots");
-
-                    return objectMapper.readValue(
-                            slotsJson,
-                            new TypeReference<>() {
-                            }
-                    );
-                },
-                date,
-                fieldId
-        );
-    }
-
-
-    public int bookEvent(Short fieldId, EventBookingRequest request) {
-
-        var field = fieldRepository.findById(fieldId).orElseThrow(() -> new NotFoundException("Field not found"));
-
-
-        BigDecimal totalAmount =
-                field.getCost().multiply(
-                        BigDecimal.valueOf(field.getCapacity())
-                );
-
-        BigDecimal amountPaid = totalAmount;
-        BigDecimal remaining = BigDecimal.ZERO;
-
-        if (request.eventStatus() == EventStatus.HALF) {
-            amountPaid = totalAmount.divide(
-                    BigDecimal.valueOf(2),
-                    2,
-                    RoundingMode.HALF_UP
-            );
-
-            remaining = totalAmount.subtract(amountPaid);
-        }
-
-        if (request.discounted() != null) {
-            amountPaid = amountPaid.subtract(request.discounted());
-        }
-
-        var event = EventBookings.builder().field(field).eventStatus(request.eventStatus().getValue())
-                .remaining(remaining).eventKey(request.generatedCode())
-                .eventStart(request.startTime()).build();
-
-        var bookingPayment = EventBookingPayment.builder().event(event).payerId(request.payerId())
-                .receivedById(request.receivedById()).paymentMethod(request.paymentMethod()).merchantNumber(request.merchantNumber()).amountPaid(amountPaid).discountAmount(request.discounted()).build();
-        event.getBookingPayments().add(bookingPayment);
-        var savedEvent = eventBookingRepository.save(event);
-        return savedEvent.getId();
-    }
 }
 

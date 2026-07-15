@@ -1,19 +1,13 @@
 package com.hammi.playground.modules.events;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record EventBookingRequest(
-        @NotNull(message = "Start time is required")
-        @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-        LocalDateTime startTime,
-
-        Integer generatedCode,
+public record EventTakeHalfRequest(
+        Integer eventKey,
 
         UUID payerId,
 
@@ -24,11 +18,10 @@ public record EventBookingRequest(
 
         String merchantNumber,
 
-        @NotNull(message = "Event type is required")
-        EventStatus eventStatus,
+        BigDecimal discounted,
 
-        @NotNull(message = "Discount is required")
-        BigDecimal discounted
+        @NotNull(message = "Amount paid amount is required")
+        BigDecimal amountPaid
 ) {
 
     @AssertTrue(message = "Exactly one of payerId or receivedById must be provided.")
@@ -36,7 +29,7 @@ public record EventBookingRequest(
         return (payerId == null) != (receivedById == null);
     }
 
-    @AssertTrue(message = "Merchant number is required for non-cash payments.")
+    @AssertTrue(message = "merchantNumber number is required for non-cash payments.")
     public boolean isValidMerchantNumber() {
         if ("CASH".equalsIgnoreCase(paymentMethod)) {
             return merchantNumber == null || merchantNumber.isBlank();
@@ -45,7 +38,7 @@ public record EventBookingRequest(
     }
 
 
-    @AssertTrue(message = "Discount can only be applied by stadium manager.")
+    @AssertTrue(message = "discounted can only be applied by stadium manager.")
     public boolean isDiscountValid() {
         if (discounted == null || discounted.compareTo(BigDecimal.ZERO) == 0) {
             return true;

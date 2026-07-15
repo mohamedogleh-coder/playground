@@ -1,14 +1,11 @@
 package com.hammi.playground.modules.fields;
 
-import com.hammi.playground.modules.events.EventBookingRequest;
 import com.hammi.playground.util.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tools.jackson.databind.JsonNode;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,15 +24,4 @@ class FieldsController {
     public ResponseEntity<ApiResponse<FieldResponse>> addField(@PathVariable UUID stadiumId, @RequestBody @Valid FieldRequest request) {
         return ResponseEntity.ok().body(new ApiResponse<>(fieldsService.addField(stadiumId, request)));
     }
-
-    @GetMapping("/{fieldId}/events/{event_date}")
-    public ResponseEntity<ApiResponse<List<TimeSlotsResponse>>> getFiledEvents(@PathVariable Short fieldId, @PathVariable("event_date") LocalDate eventDate) {
-        return ResponseEntity.ok().body(new ApiResponse<>(fieldsService.getFieldEvents(fieldId, eventDate)));
-    }
-
-    @PostMapping("/{fieldId}/book")
-    public ResponseEntity<ApiResponse<Integer>> bookEvent(@PathVariable UUID stadiumId, @PathVariable Short fieldId, @RequestBody @Valid EventBookingRequest request) {
-        return ResponseEntity.ok().body(new ApiResponse<>(fieldsService.bookEvent(fieldId, request)));
-    }
-
 }

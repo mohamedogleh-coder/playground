@@ -1,7 +1,7 @@
 package com.hammi.playground.modules.fields;
 
 
-record TimeSlotsResponse(
+public record TimeSlotsResponse(
         String startTime,
         String endTime,
         Short eventId,
