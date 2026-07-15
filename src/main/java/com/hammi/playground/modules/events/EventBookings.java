@@ -4,7 +4,10 @@ import com.hammi.playground.modules.fields.Field;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,6 +34,18 @@ public class EventBookings {
     @Column(name = "event_start", nullable = false)
     @EqualsAndHashCode.Include
     private LocalDateTime eventStart;
+
+    @Column(name = "remaining", nullable = false)
+    @EqualsAndHashCode.Include
+    private BigDecimal remaining;
+
+    @Column(name = "event_status", nullable = false)
+    @EqualsAndHashCode.Include
+    private String eventStatus;
+
+    @Builder.Default
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "event")
+    private List<EventBookingPayment> bookingPayments = new ArrayList<>();
 
     @Column(name = "event_end", nullable = false)
     private LocalDateTime eventEnd;
