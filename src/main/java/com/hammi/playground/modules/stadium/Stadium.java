@@ -8,6 +8,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.locationtech.jts.geom.Point;
 
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -64,4 +66,22 @@ public class Stadium {
     @Builder.Default
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "stadium")
     private List<StadiumManager> managers = new ArrayList<>();
+
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.workingDays == null || this.workingDays.isEmpty()) {
+            this.workingDays = new ArrayList<>();
+            for (int i = 1; i <= 7; i++) {
+                StadiumWorkingDay day = StadiumWorkingDay.builder()
+                        .stadium(this)
+                        .dayOfWeek((short) i)
+                        .openingTime(LocalTime.of(8, 0))
+                        .closingTime(LocalTime.of(21, 0))
+                        .isOpen(true)
+                        .build();
+                this.workingDays.add(day);
+            }
+        }
+    }
 }

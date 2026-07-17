@@ -6,8 +6,8 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 public record WorkingDaysRequest(
-        @NotNull(message = "Day of week is required")
-        DayOfWeek dayOfWeek,
+        @NotNull(message = "Week id is required")
+        Short id,
 
         @NotNull(message = "Opening time is required")
         LocalTime openingTime,
@@ -17,6 +17,5 @@ public record WorkingDaysRequest(
 
         @NotNull(message = "Open is required")
         Boolean isOpen
-
 ) {
 }

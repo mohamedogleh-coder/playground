@@ -26,9 +26,8 @@ public class StadiumWorkingDay {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Short id;
 
-    @Enumerated(EnumType.ORDINAL)
     @Column(name = "day_of_week", nullable = false)
-    private DayOfWeek dayOfWeek;
+    private Short dayOfWeek;
 
     @Column(name = "opening_time", nullable = false)
     private LocalTime openingTime;
