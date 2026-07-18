@@ -24,28 +24,24 @@ public class WorkingDaysService {
         return stadium.getWorkingDays().stream().map((day -> new WorkingDaysResponse(day.getId(), convertToDayOfTheWeek(day.getDayOfWeek()), day.getOpeningTime(), day.getClosingTime(), day.getIsOpen()))).toList();
     }
 
+
     @Transactional
     public List<WorkingDaysResponse> updateStadiumWorkingDays(UUID stadiumId, WorkingDaysRequestList requestList) {
-        // 1. Soo qaado Stadium-ka iyo dhammaan Working Days-ka uu leeyahay
         var stadium = stadiumRepository.findStadiumWithWorkingDays(stadiumId)
                 .orElseThrow(() -> new NotFoundException("Stadium not exists"));
 
-        // Map u beddel si aad u hesho O(1) lookup
         Map<Short, StadiumWorkingDay> existingDaysMap = stadium.getWorkingDays().stream()
                 .collect(Collectors.toMap(StadiumWorkingDay::getId, Function.identity()));
 
 
-        // SIXID: Waxaan u beddelnay .forEach() si koodhku u fulo dhab ahaan
         requestList.workingDays().forEach(request -> {
             StadiumWorkingDay existingDay = existingDaysMap.get(request.id());
             if (existingDay != null) {
                 System.out.println("This changed");
-                // SIXID: Hubi dhamaan `!` astaan kasta dhexdeeda si loo arko hadday kala duwan yihiin
                 if (!request.openingTime().equals(existingDay.getOpeningTime())
                         || !request.closingTime().equals(existingDay.getClosingTime())
                         || !request.isOpen().equals(existingDay.getIsOpen())) {
 
-                    // SIXID: Waxaan saxnay setters-ka si sax ahna loogu qoro
                     existingDay.setOpeningTime(request.openingTime());
                     existingDay.setClosingTime(request.closingTime());
                     existingDay.setIsOpen(request.isOpen());
@@ -57,14 +53,12 @@ public class WorkingDaysService {
             }
         });
 
-        // Keydi isbeddelka
         stadiumRepository.save(stadium);
 
-        // Soo celi liiska oo dhan
         return stadium.getWorkingDays().stream()
                 .map(day -> new WorkingDaysResponse(
                         day.getId(),
-                        convertToDayOfTheWeek(day.getDayOfWeek()), // Tani waa hab aad u fiican oo Converter-ka lagu isticmaalo!
+                        convertToDayOfTheWeek(day.getDayOfWeek()),
                         day.getOpeningTime(),
                         day.getClosingTime(),
                         day.getIsOpen()
