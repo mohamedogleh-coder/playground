@@ -6,7 +6,7 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 public record WorkingDaysRequest(
-        @NotNull(message = "Week id is required")
+//        @NotNull(message = "Week id is required")
         Short id,
 
         @NotNull(message = "Opening time is required")

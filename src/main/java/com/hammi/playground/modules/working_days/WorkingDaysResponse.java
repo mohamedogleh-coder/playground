@@ -7,7 +7,7 @@ import java.time.LocalTime;
 
 public record WorkingDaysResponse(
         short id,
-        DayOfWeek dayOfWeek,
+        String dayOfWeek,
         @JsonFormat(pattern = "HH:mm")
         LocalTime openingTime,
         @JsonFormat(pattern = "HH:mm")

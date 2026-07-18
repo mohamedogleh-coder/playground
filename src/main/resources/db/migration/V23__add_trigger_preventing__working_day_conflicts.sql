@@ -60,25 +60,22 @@ BEGIN
         RETURN NEW;
     END IF;
 
-    IF
-        NEW.is_open = false THEN
-        RAISE EXCEPTION
-            'Malinka % da waxa jira % booking sidaas darteed lama ogola in la xidho garoon-ka',
-            get_day_name(NEW.day_of_week),v_booking_count;
+    IF NEW.is_open = false THEN
+        RAISE EXCEPTION 'Malinka % da waxa jira % booking sidaas darteed lama ogola in la xidho garoon-ka',
+            get_day_name(NEW.day_of_week), v_booking_count
+            USING ERRCODE = 'P0001';
     END IF;
 
-    IF
-        NEW.opening_time > v_min_start_time THEN
-        RAISE EXCEPTION
-            'Malinka % da waxa jira % booking oo bilaabanaya % sidaas darteed xiliga furitaanka uma bedeli kartid %',
-            get_day_name(NEW.day_of_week),v_booking_count, v_min_start_time,NEW.opening_time;
+    IF NEW.opening_time > v_min_start_time THEN
+        RAISE EXCEPTION 'Malinka % da waxa jira % booking oo bilaabanaya % sidaas darteed xiliga furitaanka uma bedeli kartid %',
+            get_day_name(NEW.day_of_week), v_booking_count, v_min_start_time, NEW.opening_time
+            USING ERRCODE = 'P0001';
     END IF;
 
-    IF
-        NEW.closing_time < v_max_end_time THEN
-        RAISE EXCEPTION
-            'Malinka % da waxa jira % booking oo dhamanaya % sidaas darteed xiliga xidhitaanka uma bedeli kartid %',
-            get_day_name(NEW.day_of_week),v_booking_count, v_min_start_time,NEW.opening_time;
+    IF NEW.closing_time < v_max_end_time THEN
+        RAISE EXCEPTION 'Malinka % da waxa jira % booking oo dhamanaya % sidaas darteed xiliga xidhitaanka uma bedeli kartid %',
+            get_day_name(NEW.day_of_week), v_booking_count, v_max_end_time, NEW.closing_time
+            USING ERRCODE = 'P0001';
     END IF;
 
     RETURN NEW;

@@ -20,15 +20,14 @@ public class WorkingDaysController {
         return ResponseEntity.ok().body(new ApiResponse<>(workingDaysService.getStadiumWorkingDays(stadiumId)));
     }
 
+    @PutMapping("/{workingDay}")
+    public ResponseEntity<ApiResponse<WorkingDaysResponse>> updateWorkingDays(@PathVariable Short workingDay, @RequestBody @Valid WorkingDaysRequest request) {
+        return ResponseEntity.ok().body(new ApiResponse<>(workingDaysService.updateWorkingDay(workingDay, request)));
+    }
 
     @PutMapping
     public ResponseEntity<ApiResponse<List<WorkingDaysResponse>>> updateWorkingDays(@PathVariable UUID stadiumId, @RequestBody @Valid WorkingDaysRequestList request) {
         return ResponseEntity.ok().body(new ApiResponse<>(workingDaysService.updateStadiumWorkingDays(stadiumId, request)));
     }
 
-//    @PostMapping
-//    public ResponseEntity<ApiResponse<List<WorkingDaysResponse>>> addWorkingDay(@PathVariable UUID stadiumId, @RequestBody @Valid WorkingDaysRequestList request
-//    ) {
-//        return ResponseEntity.ok().body(new ApiResponse<>(workingDaysService.addWorkingDay(stadiumId, request)));
-//    }
 }
