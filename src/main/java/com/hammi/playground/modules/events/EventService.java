@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -175,5 +176,26 @@ public class EventService {
         );
     }
 
+
+    public List<EventsBookedSummery> getEventsBookingSpecificDate(UUID stadiumId) {
+        String query = """
+                 SELECT
+                     f.id as field_id,
+                     f.capacity,
+                     eb.event_start::date,
+                     count(eb.id) as total_events
+                 FROM public.fields f
+                          JOIN public.event_bookings eb ON f.id = eb.field_id
+                 WHERE f.stadium_id = ?
+                   AND eb.event_start::date >= now()
+                 GROUP BY f.id, eb.event_start::date;
+                """;
+        return jdbcTemplate.query(query, (rs, _) -> new EventsBookedSummery(
+                rs.getShort("field_id"),
+                rs.getShort("capacity"),
+                rs.getString("event_start"),
+                rs.getShort("total_events")
+        ), stadiumId);
+    }
 
 }

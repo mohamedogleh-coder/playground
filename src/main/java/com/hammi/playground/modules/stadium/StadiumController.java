@@ -1,5 +1,6 @@
 package com.hammi.playground.modules.stadium;
 
+import com.hammi.playground.modules.events.EventsBookedSummery;
 import com.hammi.playground.util.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -22,6 +24,16 @@ public class StadiumController {
     public ResponseEntity<ApiResponse<List<StadiumsListResponse>>> getAllStadiums() {
         return ResponseEntity.ok().body(new ApiResponse<>(stadiumService.getAllStadiums()));
     }
+
+
+    @GetMapping("/{stadiumId}/events/{bookingDate}")
+    public ResponseEntity<ApiResponse<List<EventsBookedSummery>>> getStadiumBookedEvents(
+            @PathVariable UUID stadiumId,
+            @PathVariable LocalDate bookingDate
+    ) {
+        return ResponseEntity.ok().body(new ApiResponse<>(stadiumService.getEventsBookingSpecificDate(stadiumId, bookingDate)));
+    }
+
 
     @PostMapping
     public ResponseEntity<ApiResponse<UUID>> registerStadium(@Valid @RequestBody StadiumRegRequest regRequest) {

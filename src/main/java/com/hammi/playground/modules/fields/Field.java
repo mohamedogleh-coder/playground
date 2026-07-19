@@ -36,4 +36,8 @@ public class Field {
     @Builder.Default
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "field")
     private List<EventBookings> eventBookings = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "field")
+    private List<FieldImage> fieldImages = new ArrayList<>();
 }

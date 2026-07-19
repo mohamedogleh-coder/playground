@@ -3,6 +3,7 @@ package com.hammi.playground.modules.stadium;
 
 import com.hammi.playground.exceptions.ApiException;
 import com.hammi.playground.exceptions.NotFoundException;
+import com.hammi.playground.modules.events.EventsBookedSummery;
 import com.hammi.playground.modules.managers.StadiumManager;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Coordinate;
@@ -12,6 +13,7 @@ import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -76,6 +78,28 @@ public class StadiumService {
             throw e;
         }
 
+    }
+
+
+    public List<EventsBookedSummery> getEventsBookingSpecificDate(UUID stadiumId, LocalDate bookingDate) {
+        String query = """
+                 SELECT
+                     f.id as field_id,
+                     f.capacity,
+                     eb.event_start::date,
+                     count(eb.id) as total_events
+                 FROM public.fields f
+                          JOIN public.event_bookings eb ON f.id = eb.field_id
+                 WHERE f.stadium_id = ?
+                   AND eb.event_start::date =?
+                 GROUP BY f.id, eb.event_start::date;
+                """;
+        return jdbcTemplate.query(query, (rs, _) -> new EventsBookedSummery(
+                rs.getShort("field_id"),
+                rs.getShort("capacity"),
+                rs.getString("event_start"),
+                rs.getShort("total_events")
+        ), stadiumId, bookingDate);
     }
 
 }

@@ -92,8 +92,8 @@ public class WorkingDaysService {
             return null;
         }
         return switch (data) {
-            case 1 -> "Salasa";
-            case 2 -> "Isniin";
+            case 1 -> "Isniin";
+            case 2 -> "Salaasa";
             case 3 -> "Arbaca";
             case 4 -> "Khamiis";
             case 5 -> "Jimce";

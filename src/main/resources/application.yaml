@@ -22,3 +22,8 @@ spring:
   flyway:
     enabled: true
     baseline-on-migrate: true
+
+supabase:
+  url: ${SUPABASE_URL}
+  publishableKey: ${SUPABASE_PUBLISHABLE_KEY}
+  secretKey: ${SUPABASE_SECRET_KEY}

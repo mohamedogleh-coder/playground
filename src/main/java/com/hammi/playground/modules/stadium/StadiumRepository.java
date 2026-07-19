@@ -14,6 +14,7 @@ public interface StadiumRepository extends CrudRepository<Stadium, UUID> {
     @Query("SELECT s FROM Stadium s LEFT JOIN FETCH s.fields WHERE s.id=:stadiumId")
     Optional<Stadium> findStadiumWithFields(@Param("stadiumId") UUID stadiumId);
 
+
     @Query("SELECT s FROM Stadium s LEFT JOIN FETCH s.workingDays w WHERE s.id=:stadiumId")
     Optional<Stadium> findStadiumWithWorkingDays(@Param("stadiumId") UUID stadiumId);
 

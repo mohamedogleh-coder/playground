@@ -6,10 +6,9 @@ $$
 DECLARE
     v_day_name VARCHAR;
 BEGIN
-
     CASE p_day_number
-        WHEN 1 THEN v_day_name := 'Salaasa';
-        WHEN 2 THEN v_day_name := 'Isniin';
+        WHEN 1 THEN v_day_name := 'Isniin';
+        WHEN 2 THEN v_day_name := 'Salaasa';
         WHEN 3 THEN v_day_name := 'Arbaca';
         WHEN 4 THEN v_day_name := 'Khamiis';
         WHEN 5 THEN v_day_name := 'Jimce';
@@ -19,10 +18,8 @@ BEGIN
         END CASE;
 
     RETURN v_day_name;
-
 END;
 $$;
-
 
 
 CREATE
@@ -53,7 +50,8 @@ BEGIN
     FROM event_bookings eb
              JOIN fields f ON f.id = eb.field_id
     WHERE f.stadium_id = NEW.stadium_id
-      AND extract(isodow FROM eb.event_start) = NEW.day_of_week;
+      AND extract(isodow FROM eb.event_start) = NEW.day_of_week
+      AND eb.event_start >= now();
 
     IF
         v_booking_count = 0 THEN
