@@ -101,6 +101,7 @@ import com.hammi.playground.modules.stadium.StadiumRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
@@ -118,11 +119,25 @@ public class FieldsService {
     private final StadiumRepository stadiumRepository;
     private final SupabaseStorageService supabaseStorageService;
 
+
     public List<FieldResponse> getStadiumFields(UUID stadiumId) {
-        var stadium = stadiumRepository.findStadiumWithFields(stadiumId).orElseThrow(() -> new NotFoundException("Stadium not exists"));
-//        List<String> imagePaths = stadium.getFields().
-        return stadium.getFields().stream().map((field -> new FieldResponse(field.getId(), field.getCapacity(), field.getCost(), List.of()
-        ))).toList();
+        var stadium = stadiumRepository.findStadiumWithFields(stadiumId)
+                .orElseThrow(() -> new NotFoundException("Stadium does not exist"));
+
+        return stadium.getFields().stream()
+                .map(field -> {
+                    List<String> imagePaths = field.getFieldImages().stream()
+                            .map(FieldImage::getImagePath)
+                            .toList();
+
+                    return new FieldResponse(
+                            field.getId(),
+                            field.getCapacity(),
+                            field.getCost(),
+                            imagePaths
+                    );
+                })
+                .toList();
     }
 
 
@@ -132,16 +147,13 @@ public class FieldsService {
         var newField = Field.builder().cost(request.cost()).capacity(request.capacity()).stadium(stadium).build();
         var savedField = fieldRepository.save(newField);
 
-        List<String> imagePaths = new ArrayList<>();
-
-
-//        supabaseStorageService.uploadFile();
 
         return new FieldResponse(
                 savedField.getId(), savedField.getCapacity(), savedField.getCost(),
                 List.of()
         );
     }
+
 
 }
 

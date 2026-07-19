@@ -7,7 +7,9 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -38,6 +40,6 @@ public class Field {
     private List<EventBookings> eventBookings = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "field")
-    private List<FieldImage> fieldImages = new ArrayList<>();
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "field")
+    private Set<FieldImage> fieldImages = new LinkedHashSet<>();
 }

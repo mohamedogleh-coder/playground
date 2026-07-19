@@ -11,7 +11,7 @@ import java.util.UUID;
 @Repository
 public interface StadiumRepository extends CrudRepository<Stadium, UUID> {
 
-    @Query("SELECT s FROM Stadium s LEFT JOIN FETCH s.fields WHERE s.id=:stadiumId")
+    @Query("SELECT s FROM Stadium s LEFT JOIN FETCH s.fields f LEFT JOIN FETCH f.fieldImages WHERE s.id=:stadiumId ORDER BY f.capacity DESC ")
     Optional<Stadium> findStadiumWithFields(@Param("stadiumId") UUID stadiumId);
 
 
