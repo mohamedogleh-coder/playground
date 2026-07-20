@@ -28,8 +28,6 @@ class FieldsController {
             @RequestPart("request") @Valid FieldRequest request,
             @RequestPart(value = "files", required = false) List<MultipartFile> files
     ) {
-        System.out.println("Images are "+files.size());
-
         return ResponseEntity.ok().body(new ApiResponse<>(fieldsService.addField(stadiumId, request, files)));
     }
 

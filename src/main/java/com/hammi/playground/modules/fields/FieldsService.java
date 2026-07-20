@@ -1,97 +1,3 @@
-//@Service
-//@RequiredArgsConstructor
-//public class FieldsService {
-//
-//    private final FieldRepository fieldRepository;
-//    private final StadiumRepository stadiumRepository;
-//    private final FieldImageRepository fieldImageRepository;
-//    private final SupabaseStorageService supabaseStorageService;
-//
-//
-//    public List<FieldResponse> getStadiumFields(UUID stadiumId) {
-//
-//        var stadium = stadiumRepository.findStadiumWithFields(stadiumId)
-//                .orElseThrow(() -> new NotFoundException("Stadium not exists"));
-//
-//
-//        return stadium.getFields()
-//                .stream()
-//                .map(field -> {
-//
-//                    List<String> images = field.getImages()
-//                            .stream()
-//                            .map(FieldImage::getImagePath)
-//                            .toList();
-//
-//                    return new FieldResponse(
-//                            field.getId(),
-//                            field.getCapacity(),
-//                            field.getCost(),
-//                            images
-//                    );
-//
-//                })
-//                .toList();
-//    }
-//
-//
-//    public FieldResponse addField(UUID stadiumId, FieldRequest request) {
-//
-//        var stadium = stadiumRepository.findStadiumWithFields(stadiumId)
-//                .orElseThrow(() -> new NotFoundException("Stadium not exists"));
-//
-//
-//        Field field = Field.builder()
-//                .capacity(request.capacity())
-//                .cost(request.cost())
-//                .stadium(stadium)
-//                .build();
-//
-//
-//        Field savedField = fieldRepository.save(field);
-//
-//
-//        List<FieldImage> images = request.images()
-//                .stream()
-//                .map(file -> {
-//
-//                    try {
-//
-//                        String path = supabaseStorageService.uploadFile(
-//                                file,
-//                                "fields"
-//                        );
-//
-//
-//                        return FieldImage.builder()
-//                                .imagePath(path)
-//                                .field(savedField)
-//                                .build();
-//
-//
-//                    } catch (Exception e) {
-//                        throw new RuntimeException("Image upload failed", e);
-//                    }
-//
-//                })
-//                .toList();
-//
-//
-//        fieldImageRepository.saveAll(images);
-//
-//
-//        return new FieldResponse(
-//                savedField.getId(),
-//                savedField.getCapacity(),
-//                savedField.getCost(),
-//                images.stream()
-//                        .map(FieldImage::getImagePath)
-//                        .toList()
-//        );
-//    }
-//
-//}
-
 package com.hammi.playground.modules.fields;
 
 import com.hammi.playground.config.SupabaseStorageService;
@@ -166,7 +72,7 @@ public class FieldsService {
 
         List<String> imageUrls = new ArrayList<>();
 
-        if (!imageFiles.isEmpty()) {
+        if (imageFiles != null && !imageFiles.isEmpty() && !imageFiles.get(0).isEmpty()) {
             try {
                 String folderPrefix = "stadiums/" + stadiumId + "/fields/" + savedField.getId();
 
