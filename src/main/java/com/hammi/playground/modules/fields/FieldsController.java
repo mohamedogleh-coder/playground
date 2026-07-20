@@ -3,8 +3,10 @@ package com.hammi.playground.modules.fields;
 import com.hammi.playground.util.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,8 +22,25 @@ class FieldsController {
         return ResponseEntity.ok().body(new ApiResponse<>(fieldsService.getStadiumFields(stadiumId)));
     }
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<FieldResponse>> addField(@PathVariable UUID stadiumId, @RequestBody @Valid FieldRequest request) {
-        return ResponseEntity.ok().body(new ApiResponse<>(fieldsService.addField(stadiumId, request)));
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<FieldResponse>> addField(
+            @PathVariable UUID stadiumId,
+            @RequestPart("request") @Valid FieldRequest request,
+            @RequestPart(value = "files", required = false) List<MultipartFile> files
+    ) {
+        System.out.println("Images are "+files.size());
+
+        return ResponseEntity.ok().body(new ApiResponse<>(fieldsService.addField(stadiumId, request, files)));
     }
+
+
+//    @PostMapping
+//    public ResponseEntity<ApiResponse<FieldResponse>> addField(@PathVariable UUID stadiumId, @RequestBody @Valid FieldRequest request) {
+//        return ResponseEntity.ok().body(new ApiResponse<>(fieldsService.addField(stadiumId, request)));
+//    }
+//
+//    @PutMapping("/{fieldId}")
+//    public ResponseEntity<ApiResponse<FieldResponse>> addField(@PathVariable UUID stadiumId, @PathVariable Short fieldId, @RequestBody @Valid FieldRequest request) {
+//        return ResponseEntity.ok().body(new ApiResponse<>(fieldsService.updateField(stadiumId, fieldId, request)));
+//    }
 }

@@ -21,10 +21,9 @@ public class StorageController {
     @PostMapping(value = "/upload", consumes = "multipart/form-data")
     public ResponseEntity<Map<String, String>> upload(
             @RequestParam("file") MultipartFile file,
-            @RequestParam("bucket") String bucket,
-            @RequestParam("path") String path) throws IOException {
+             @RequestParam("path") String path) throws IOException {
 
-        String publicUrl = storageService.uploadFile(file, bucket, path);
+        String publicUrl = storageService.uploadFile(file, path);
         return ResponseEntity.ok(Map.of("url", publicUrl));
     }
 
