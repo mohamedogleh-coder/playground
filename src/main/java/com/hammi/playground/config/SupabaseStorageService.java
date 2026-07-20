@@ -221,21 +221,21 @@ public class SupabaseStorageService {
             return uploadedPaths;
         } catch (Exception ex) {
             if (!uploadedPaths.isEmpty()) {
-                deleteFiles(BUCKET, uploadedPaths);
+                deleteFiles(uploadedPaths);
             }
             throw ex;
         }
     }
 
 
-    public void deleteFile(String bucket, String path) {
-        String url = "%s/storage/v1/object/%s/%s".formatted(supabaseProperties.getUrl(), bucket, path);
+    public void deleteFile(String path) {
+        String url = "%s/storage/v1/object/%s/%s".formatted(supabaseProperties.getUrl(), BUCKET, path);
         HttpEntity<Void> request = new HttpEntity<>(baseHeaders());
         restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
     }
 
-    public void deleteFiles(String bucket, List<String> paths) {
-        String url = "%s/storage/v1/object/%s".formatted(supabaseProperties.getUrl(), bucket);
+    public void deleteFiles(List<String> paths) {
+        String url = "%s/storage/v1/object/%s".formatted(supabaseProperties.getUrl(), BUCKET);
 
         HttpHeaders headers = baseHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

@@ -165,7 +165,6 @@ public class FieldsService {
     private final JdbcTemplate jdbcTemplate;
     private final ObjectMapper objectMapper;
 
-
     public List<FieldResponse> getStadiumFields(UUID stadiumId) {
         String query = """
                  SELECT f.id,
@@ -250,6 +249,14 @@ public class FieldsService {
 
 
         return new FieldResponse(savedField.getId(), savedField.getCapacity(), savedField.getCost(), fieldImages);
+    }
+
+
+    @Transactional
+    public void deleteImage(short imageId) {
+        var image = fieldImageRepository.findById(imageId).orElseThrow(()->new NotFoundException("Image not exists"));
+        supabaseStorageService.deleteFile(image.getImagePath()) ;
+        fieldImageRepository.delete(image);
     }
 
     private List<FieldImageResponse> addNewImages(UUID stadiumId, Field field, List<MultipartFile> imageFiles) {
