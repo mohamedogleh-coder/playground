@@ -42,6 +42,11 @@ class FieldsController {
         return ResponseEntity.ok().body(new ApiResponse<>(fieldsService.updateField(stadiumId, fieldId, request, files)));
     }
 
+    @DeleteMapping("/{fieldId}")
+    public ResponseEntity<ApiResponse<Void>> deleteField(@PathVariable Short fieldId) {
+        fieldsService.deleteField(fieldId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponse<>(null));
+    }
 
     @DeleteMapping("/{fieldId}/images/{imageId}")
     public ResponseEntity<ApiResponse<Void>> deleteFieldImage(@PathVariable Short imageId) {fieldsService.deleteImage(imageId);

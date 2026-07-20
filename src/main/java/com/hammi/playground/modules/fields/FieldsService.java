@@ -253,9 +253,22 @@ public class FieldsService {
 
 
     @Transactional
+    public void deleteField(Short fieldId) {
+        var field = fieldRepository.findFieldWithFieldImages(fieldId).orElseThrow(() -> new NotFoundException("Field not exists"));
+
+        if (!field.getFieldImages().isEmpty()) {
+            List<String> paths = field.getFieldImages().stream().map(FieldImage::getImagePath).toList();
+            supabaseStorageService.deleteFiles(paths);
+        }
+
+        fieldRepository.delete(field);
+
+    }
+
+    @Transactional
     public void deleteImage(short imageId) {
-        var image = fieldImageRepository.findById(imageId).orElseThrow(()->new NotFoundException("Image not exists"));
-        supabaseStorageService.deleteFile(image.getImagePath()) ;
+        var image = fieldImageRepository.findById(imageId).orElseThrow(() -> new NotFoundException("Image not exists"));
+        supabaseStorageService.deleteFile(image.getImagePath());
         fieldImageRepository.delete(image);
     }
 
