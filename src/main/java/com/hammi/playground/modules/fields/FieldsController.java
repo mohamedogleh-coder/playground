@@ -31,6 +31,27 @@ class FieldsController {
         return ResponseEntity.ok().body(new ApiResponse<>(fieldsService.addField(stadiumId, request, files)));
     }
 
+    @PutMapping(path = "/{fieldId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<FieldResponse>> updateField(
+            @PathVariable UUID stadiumId,
+            @PathVariable Short fieldId,
+            @RequestPart("request") @Valid FieldRequest request,
+            @RequestPart(value = "files", required = false) List<MultipartFile> files
+    ) {
+        return ResponseEntity.ok().body(new ApiResponse<>(fieldsService.updateField(stadiumId, fieldId, request, files)));
+    }
+
+//
+//    @DeleteMapping(path = "/{fieldId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<ApiResponse<FieldResponse>> updateField(
+//            @PathVariable UUID stadiumId,
+//            @PathVariable Short fieldId,
+//            @RequestPart("request") @Valid FieldRequest request,
+//            @RequestPart(value = "files", required = false) List<MultipartFile> files
+//    ) {
+//        return ResponseEntity.ok().body(new ApiResponse<>(fieldsService.updateField(stadiumId, fieldId, request, files)));
+//    }
+
 
 //    @PostMapping
 //    public ResponseEntity<ApiResponse<FieldResponse>> addField(@PathVariable UUID stadiumId, @RequestBody @Valid FieldRequest request) {
