@@ -7,12 +7,12 @@ public record FieldResponse(
         short id,
         short capacity,
         BigDecimal cost,
-        List<FieldImageResponse> fieldImages
+        List<String> fieldImages
 ) {
 }
 
-
-record FieldImageResponse(Short imageId, String imagePath){
-
-}
+//
+//record FieldImageResponse(Short imageId, String imagePath){
+//
+//}
 

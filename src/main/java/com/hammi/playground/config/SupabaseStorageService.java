@@ -86,6 +86,26 @@ public class SupabaseStorageService {
         return "%s/storage/v1/object/public/%s/%s".formatted(supabaseProperties.getUrl(), BUCKET, path);
     }
 
+
+    public String extractPath(String url) {
+        if (url == null || url.isBlank()) {
+            return url;
+        }
+
+        String baseUrlPrefix = "%s/storage/v1/object/public/%s/".formatted(supabaseProperties.getUrl(), BUCKET);
+
+        if (url.startsWith(baseUrlPrefix)) {
+            return url.substring(baseUrlPrefix.length());
+        }
+
+        String pathMarker = "/storage/v1/object/public/%s/".formatted(BUCKET);
+        if (url.contains(pathMarker)) {
+            return url.substring(url.indexOf(pathMarker) + pathMarker.length());
+        }
+
+        return url;
+    }
+
     private String buildPath(String folderPrefix, MultipartFile file) {
         String extension = ".jpg";
 
