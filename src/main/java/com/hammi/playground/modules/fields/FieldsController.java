@@ -43,15 +43,16 @@ class FieldsController {
     }
 
     @DeleteMapping("/{fieldId}")
-    public ResponseEntity<ApiResponse<Void>> deleteField(@PathVariable Short fieldId) {
+    public ResponseEntity<ApiResponse<Void>> deleteField(@PathVariable Short fieldId, @PathVariable String stadiumId) {
         fieldsService.deleteField(fieldId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponse<>(null));
     }
 
-    @DeleteMapping("/{fieldId}/images/{imageId}")
-    public ResponseEntity<ApiResponse<Void>> deleteFieldImage(@PathVariable Short imageId) {fieldsService.deleteImage(imageId);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponse<>(null));
-    }
+//    @DeleteMapping("/images")
+//    public ResponseEntity<ApiResponse<Void>> deleteFieldImage(@RequestParam String imagePath) {
+//        fieldsService.deleteImage(imagePath);
+//        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponse<>(null));
+//    }
 
 
 //    @PostMapping

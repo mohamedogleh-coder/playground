@@ -177,7 +177,8 @@ public class FieldsService {
                  FROM fields f
                  LEFT JOIN public.field_images fi ON f.id = fi.field_id
                  WHERE f.stadium_id = ?
-                 GROUP BY f.id, f.cost, f.capacity;
+                 GROUP BY f.id, f.cost, f.capacity
+                 ORDER BY capacity;
                 """;
 
         return jdbcTemplate.query(query, (rs, rowNum) -> {
@@ -266,11 +267,18 @@ public class FieldsService {
     }
 
     @Transactional
-    public void deleteImage(short imageId) {
-        var image = fieldImageRepository.findById(imageId).orElseThrow(() -> new NotFoundException("Image not exists"));
+    public void deleteImage(String imagePath) {
+        var image = fieldImageRepository.findFieldImageByImagePath(imagePath).orElseThrow(() -> new NotFoundException("Image not exists"));
         supabaseStorageService.deleteFile(image.getImagePath());
         fieldImageRepository.delete(image);
     }
+
+//    @Transactional
+//    public void deleteImage(short imageId) {
+//        var image = fieldImageRepository.findFieldImageByImagePath(imageId).orElseThrow(() -> new NotFoundException("Image not exists"));
+//        supabaseStorageService.deleteFile(image.getImagePath());
+//        fieldImageRepository.delete(image);
+//    }
 
     private List<FieldImageResponse> addNewImages(UUID stadiumId, Field field, List<MultipartFile> imageFiles) {
         try {
