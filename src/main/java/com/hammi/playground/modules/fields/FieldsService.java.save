@@ -15,7 +15,7 @@ import tools.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +42,7 @@ public class FieldsService {
                     ON f.id = fi.field_id
                 WHERE f.stadium_id = ?
                 GROUP BY f.id, f.cost, f.capacity
-                ORDER BY capacity ,cost DESC;
+                ORDER BY capacity DESC;
                 """;
 
         return jdbcTemplate.query(query, (rs, rowNum) -> {
@@ -93,7 +93,11 @@ public class FieldsService {
         if (hasImages(imageFiles)) {
             fieldImages = addNewImages(stadiumId, savedField, imageFiles);
         }
-        return new FieldResponse(savedField.getId(), savedField.getCapacity(), savedField.getCost(), fieldImages.stream().map(supabaseStorageService::getPublicUrl).toList());
+
+
+
+
+        return new FieldResponse(savedField.getId(), savedField.getCapacity(), savedField.getCost(), fieldImages);
     }
 
     @Transactional
@@ -116,7 +120,7 @@ public class FieldsService {
         Field savedField = fieldRepository.save(field);
 
 
-        return new FieldResponse(savedField.getId(), savedField.getCapacity(), savedField.getCost(), fieldImages.stream().map(supabaseStorageService::getPublicUrl).toList());
+        return new FieldResponse(savedField.getId(), savedField.getCapacity(), savedField.getCost(), fieldImages);
     }
 
 
