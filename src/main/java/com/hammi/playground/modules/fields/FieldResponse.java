@@ -7,6 +7,7 @@ public record FieldResponse(
         short id,
         short capacity,
         BigDecimal cost,
+        boolean stopBooking,
         List<String> fieldImages
 ) {
 }

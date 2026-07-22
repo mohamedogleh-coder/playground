@@ -31,15 +31,19 @@ public class Field {
     @Column(name = "capacity", nullable = false)
     private Short capacity;
 
+    @Column(name = "stop_booking", nullable = false)
+    private Boolean stopBooking;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "stadium_id", nullable = false)
     private Stadium stadium;
 
     @Builder.Default
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "field")
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.PERSIST, mappedBy = "field")
     private List<EventBookings> eventBookings = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "field")
     private Set<FieldImage> fieldImages = new LinkedHashSet<>();
+
 }

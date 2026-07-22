@@ -3,6 +3,7 @@ package com.hammi.playground.modules.fields;
 
 import com.hammi.playground.config.SupabaseStorageService;
 import com.hammi.playground.exceptions.NotFoundException;
+import com.hammi.playground.modules.events.EventBookingRepository;
 import com.hammi.playground.modules.stadium.StadiumRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -26,6 +27,7 @@ public class FieldsService {
     private final SupabaseStorageService supabaseStorageService;
     private final JdbcTemplate jdbcTemplate;
     private final ObjectMapper objectMapper;
+    private final EventBookingRepository eventBookingRepository;
 
     public List<FieldResponse> getStadiumFields(UUID stadiumId) {
 
@@ -33,12 +35,13 @@ public class FieldsService {
                 SELECT f.id,
                        f.cost,
                        f.capacity,
+                       f.stop_booking,
                        COALESCE(
                            json_agg(fi.image_path) FILTER (WHERE fi.id IS NOT NULL),
                            '[]'::json
                        ) AS image_paths
                 FROM fields f
-                LEFT JOIN public.field_images fi 
+                LEFT JOIN public.field_images fi
                     ON f.id = fi.field_id
                 WHERE f.stadium_id = ?
                 GROUP BY f.id, f.cost, f.capacity
@@ -72,6 +75,7 @@ public class FieldsService {
                     rs.getShort("id"),
                     rs.getShort("capacity"),
                     rs.getBigDecimal("cost"),
+                    rs.getBoolean("stop_booking"),
                     imageUrls
             );
 
@@ -84,16 +88,16 @@ public class FieldsService {
 
         var stadium = stadiumRepository.findStadiumWithFields(stadiumId).orElseThrow(() -> new NotFoundException("Stadium not exists"));
 
-        var newField = Field.builder().cost(request.cost()).capacity(request.capacity()).stadium(stadium).build();
+        var newField = Field.builder().cost(request.cost()).stopBooking(request.stopBooking())
+                .capacity(request.capacity()).stadium(stadium).build();
         var savedField = fieldRepository.save(newField);
-
 
         List<String> fieldImages = new ArrayList<>();
 
         if (hasImages(imageFiles)) {
             fieldImages = addNewImages(stadiumId, savedField, imageFiles);
         }
-        return new FieldResponse(savedField.getId(), savedField.getCapacity(), savedField.getCost(), fieldImages.stream().map(supabaseStorageService::getPublicUrl).toList());
+        return new FieldResponse(savedField.getId(), savedField.getCapacity(), savedField.getCost(), savedField.getStopBooking(), fieldImages.stream().map(supabaseStorageService::getPublicUrl).toList());
     }
 
     @Transactional
@@ -105,6 +109,7 @@ public class FieldsService {
 
         field.setCapacity(request.capacity());
         field.setCost(request.cost());
+        field.setStopBooking(request.stopBooking());
 
         List<String> fieldImages = new ArrayList<>(field.getFieldImages().stream().map(FieldImage::getImagePath).toList());
 
@@ -112,27 +117,37 @@ public class FieldsService {
             fieldImages.addAll(addNewImages(stadiumId, field, imageFiles));
         }
 
-
         Field savedField = fieldRepository.save(field);
-
-
-        return new FieldResponse(savedField.getId(), savedField.getCapacity(), savedField.getCost(), fieldImages.stream().map(supabaseStorageService::getPublicUrl).toList());
+        return new FieldResponse(savedField.getId(), savedField.getCapacity(), savedField.getCost(), savedField.getStopBooking(), fieldImages.stream().map(supabaseStorageService::getPublicUrl).toList());
     }
 
 
-    @Transactional
-    public void deleteField(Short fieldId) {
-        var field = fieldRepository.findFieldWithFieldImages(fieldId).orElseThrow(() -> new NotFoundException("Field not exists"));
+    //
+//
+//    @Transactional
+//    public void deleteField(Short fieldId) {
+//
+//        boolean isExists = eventBookingRepository.existsByField_IdAndEventEndGreaterThanEqual(fieldId, LocalDateTime.now());
+//
+//
+//        System.out.println(isExists);
+//
+//        //
 
-        if (!field.getFieldImages().isEmpty()) {
-            List<String> paths = field.getFieldImages().stream().map(FieldImage::getImagePath).toList();
-            supabaseStorageService.deleteFiles(paths);
-        }
-
-        fieldRepository.delete(field);
-
-    }
-
+    /// /        var field = fieldRepository.findFieldWithUpcomingEvents(fieldId).orElseThrow(() -> new NotFoundException("Field not exists"));
+    /// /
+    /// /
+    /// /        if (!field.getEventBookings().isEmpty()) {
+    /// /            throw new ApiException("Garoonkan ma masaxi kartid waayo wuxu leyahy events aan weli la ciyaarin");
+    /// /        }
+    /// ///        if (!field.getFieldImages().isEmpty()) {
+    /// ///            List<String> paths = field.getFieldImages().stream().map(FieldImage::getImagePath).toList();
+    /// ///            supabaseStorageService.deleteFiles(paths);
+    /// ///        }
+    /// /
+    /// /        System.out.println("Good");
+    /// /        fieldRepository.delete(field);
+//    }
     @Transactional
     public void deleteImage(String imagePath) {
         var actualPath = supabaseStorageService.extractPath(imagePath).trim();
@@ -150,9 +165,7 @@ public class FieldsService {
 
             List<String> imagePaths = supabaseStorageService.uploadFiles(imageFiles, folderPrefix);
 
-
             List<FieldImage> images = imagePaths.stream().map(path -> FieldImage.builder().imagePath(path).field(field).build()).toList();
-
 
             var savedImages = fieldImageRepository.saveAll(images);
 

@@ -3,7 +3,6 @@ package com.hammi.playground.modules.fields;
 import com.hammi.playground.util.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,10 +41,11 @@ class FieldsController {
         return ResponseEntity.ok().body(new ApiResponse<>(fieldsService.updateField(stadiumId, fieldId, request, files)));
     }
 
-    @DeleteMapping("/{fieldId}")
-    public ResponseEntity<ApiResponse<Void>> deleteField(@PathVariable Short fieldId, @PathVariable String stadiumId) {
-        fieldsService.deleteField(fieldId);
-        return ResponseEntity.ok(new ApiResponse<>(null));
-    }
+//
+//    @DeleteMapping("/{fieldId}")
+//    public ResponseEntity<ApiResponse<Void>> deleteField(@PathVariable Short fieldId, @PathVariable String stadiumId) {
+//        fieldsService.deleteField(fieldId);
+//        return ResponseEntity.ok(new ApiResponse<>(null));
+//    }
 
 }
