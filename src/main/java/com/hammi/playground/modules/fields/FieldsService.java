@@ -3,7 +3,6 @@ package com.hammi.playground.modules.fields;
 
 import com.hammi.playground.config.SupabaseStorageService;
 import com.hammi.playground.exceptions.NotFoundException;
-import com.hammi.playground.modules.events.EventBookingRepository;
 import com.hammi.playground.modules.stadium.StadiumRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -27,7 +26,6 @@ public class FieldsService {
     private final SupabaseStorageService supabaseStorageService;
     private final JdbcTemplate jdbcTemplate;
     private final ObjectMapper objectMapper;
-    private final EventBookingRepository eventBookingRepository;
 
     public List<FieldResponse> getStadiumFields(UUID stadiumId) {
 
@@ -58,7 +56,7 @@ public class FieldsService {
                 try {
                     List<String> paths = objectMapper.readValue(
                             jsonImages,
-                            new TypeReference<List<String>>() {
+                            new TypeReference<>() {
                             }
                     );
 
@@ -122,32 +120,6 @@ public class FieldsService {
     }
 
 
-    //
-//
-//    @Transactional
-//    public void deleteField(Short fieldId) {
-//
-//        boolean isExists = eventBookingRepository.existsByField_IdAndEventEndGreaterThanEqual(fieldId, LocalDateTime.now());
-//
-//
-//        System.out.println(isExists);
-//
-//        //
-
-    /// /        var field = fieldRepository.findFieldWithUpcomingEvents(fieldId).orElseThrow(() -> new NotFoundException("Field not exists"));
-    /// /
-    /// /
-    /// /        if (!field.getEventBookings().isEmpty()) {
-    /// /            throw new ApiException("Garoonkan ma masaxi kartid waayo wuxu leyahy events aan weli la ciyaarin");
-    /// /        }
-    /// ///        if (!field.getFieldImages().isEmpty()) {
-    /// ///            List<String> paths = field.getFieldImages().stream().map(FieldImage::getImagePath).toList();
-    /// ///            supabaseStorageService.deleteFiles(paths);
-    /// ///        }
-    /// /
-    /// /        System.out.println("Good");
-    /// /        fieldRepository.delete(field);
-//    }
     @Transactional
     public void deleteImage(String imagePath) {
         var actualPath = supabaseStorageService.extractPath(imagePath).trim();
