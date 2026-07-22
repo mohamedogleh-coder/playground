@@ -1,13 +1,16 @@
 package com.hammi.playground.modules.stadium;
 
 import com.hammi.playground.modules.events.EventsBookedSummery;
+import com.hammi.playground.modules.fields.FieldRequest;
 import com.hammi.playground.util.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,15 +38,17 @@ public class StadiumController {
     }
 
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<UUID>> registerStadium(@Valid @RequestBody StadiumRegRequest regRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(stadiumService.registerStadium(regRequest)));
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<StadiumResponse>> registerStadium(@RequestPart("request") @Valid StadiumRegRequest regRequest,
+                                                                        @RequestPart(value = "profile", required = false) MultipartFile profile) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(stadiumService.registerStadium(regRequest, profile)));
     }
 
     @PutMapping("/{stadiumId}")
-    public ResponseEntity<ApiResponse<UUID>> updateStadium(@PathVariable UUID stadiumId, @Valid @RequestBody StadiumRegRequest regRequest) {
+    public ResponseEntity<ApiResponse<StadiumResponse>> updateStadium(@PathVariable UUID stadiumId, @Valid @RequestBody StadiumRegRequest regRequest) {
         return ResponseEntity.ok().body(new ApiResponse<>(stadiumService.updateStadium(stadiumId, regRequest)));
     }
+
 
     @GetMapping("/filter")
     public ResponseEntity<ApiResponse<List<FilteredStadiumsResponse>>> filterEventsResponse(@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")

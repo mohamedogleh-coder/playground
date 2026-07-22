@@ -1,0 +1,1 @@
+ALTER TABLE stadium_managers ADD CONSTRAINT manager_single_stadium_unq unique(manager_id);

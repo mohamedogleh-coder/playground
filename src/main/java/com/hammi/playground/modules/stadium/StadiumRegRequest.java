@@ -16,6 +16,7 @@ public record StadiumRegRequest(
 
         @DecimalMin(value = "-180.0", message = "Longitude must be between -180 and 180") @DecimalMax(value = "180.0", message = "Longitude must be between -180 and 180") Double longitude,
 
+        @NotNull(message = "half booking is required")
         Boolean halfBooking,
 
         String profileUrl) {
