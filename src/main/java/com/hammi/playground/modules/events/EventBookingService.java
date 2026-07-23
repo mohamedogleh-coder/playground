@@ -6,8 +6,7 @@ import com.hammi.playground.modules.fields.FieldRepository;
 import com.hammi.playground.modules.fields.TimeSlotsResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
+ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
@@ -16,36 +15,24 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class EventBookingService {
     private final EventBookingRepository eventBookingRepository;
     private final FieldRepository fieldRepository;
-    private final JdbcTemplate jdbcTemplate;
     private final ObjectMapper objectMapper;
 
     public List<TimeSlotsResponse> generateEventSlots(Short fieldId, LocalDate date) {
+        String json = eventBookingRepository.getTimeSlots(fieldId, date);
 
-        return jdbcTemplate.queryForObject(
-                """
-                        SELECT get_field_events_fn(
-                            CAST(? AS date),
-                            CAST(? AS smallint)
-                        ) AS slots
-                        """,
-                (rs, _) -> {
-                    String slotsJson = rs.getString("slots");
-
-                    return objectMapper.readValue(slotsJson, new TypeReference<>() {
-                            }
-                    );
-                },
-                date,
-                fieldId
+        return objectMapper.readValue(
+                json,
+                new TypeReference<>() {
+                }
         );
     }
+
 
     @Transactional
     public Integer bookEvent(Short fieldId, EventBookingRequest request) {
@@ -184,95 +171,5 @@ public class EventBookingService {
                 payments
         );
     }
-
-//    public List<EventsBookedSummery> getEventBookingStatusSummaryByDateRange(
-//            UUID stadiumId,
-//            LocalDate startDate,
-//            LocalDate endDate
-//    ) {
-//
-//        String query = """
-//                SELECT
-//                    f.id AS field_id,
-//                    f.capacity,
-//
-//                    COUNT(eb.id) FILTER (
-//                        WHERE eb.event_status = 'pending'
-//                    ) AS pending_events,
-//
-//                    COUNT(eb.id) FILTER (
-//                        WHERE eb.event_status = 'confirmed'
-//                    ) AS confirmed_events,
-//
-//                    COUNT(eb.id) FILTER (
-//                        WHERE eb.event_status = 'completed'
-//                    ) AS completed_events,
-//
-//                    COUNT(eb.id) FILTER (
-//                        WHERE eb.event_status = 'canceled'
-//                    ) AS canceled_events
-//
-//                FROM public.fields f
-//
-//                LEFT JOIN public.event_bookings eb
-//                    ON f.id = eb.field_id
-//                    AND eb.event_start >= ?
-//                    AND eb.event_start < ? + INTERVAL '1 day'
-//
-//                WHERE f.stadium_id = ?
-//
-//                GROUP BY
-//                    f.id,
-//                    f.capacity;
-//                """;
-//
-//
-//        return jdbcTemplate.query(
-//                query,
-//                (rs, _) -> new EventsBookedSummery(
-//                        rs.getShort("field_id"),
-//                        rs.getShort("capacity"),
-//                        rs.getString("event_start"),
-//                        rs.getShort("pending_events"),
-//                        rs.getShort("confirmed_events"),
-//                        rs.getShort("completed_events"),
-//                        rs.getShort("canceled_events")
-//                ),
-//                startDate,
-//                endDate,
-//                stadiumId
-//        );
-//    }
-////
-//    public List<EventsBookedSummery> getEventsBookingSpecificDate(UUID stadiumId, LocalDate startDate, LocalDate endDate) {
-//        String query = """
-//                 SELECT
-//                     f.id AS field_id,
-//                     f.capacity,
-//                     COUNT(*) FILTER (WHERE eb.event_status = 'pending')   AS pending_events,
-//                     COUNT(*) FILTER (WHERE eb.event_status = 'confirmed') AS confirmed_events,
-//                     COUNT(*) FILTER (WHERE eb.event_status = 'completed') AS completed_events,
-//                     COUNT(*) FILTER (WHERE eb.event_status = 'canceled')  AS canceled_events
-//                 FROM public.fields f
-//                 LEFT JOIN public.event_bookings eb
-//                     ON f.id = eb.field_id
-//                     AND eb.event_start::date BETWEEN ? AND ?
-//                 WHERE f.stadium_id = ?
-//                 GROUP BY
-//                     f.id,
-//                     f.capacity;
-//                """;
-//
-//        return jdbcTemplate.query(query, (rs, _) -> new EventsBookedSummery(
-//                rs.getShort("field_id"),
-//                rs.getShort("capacity"),
-//                rs.getString("event_start"),
-//                rs.getShort("pending_events"),
-//                rs.getShort("confirmed_events"),
-//                rs.getShort("completed_events"),
-//                rs.getShort("canceled_events")
-//        ), startDate, endDate, stadiumId);
-//    }
-
 
 }

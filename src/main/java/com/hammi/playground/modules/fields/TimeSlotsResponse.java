@@ -9,3 +9,5 @@ public record TimeSlotsResponse(
         String eventStatus
 ) {
 }
+
+
