@@ -102,6 +102,9 @@ public class StadiumService {
             LocalDate startDate,
             LocalDate endDate
     ) {
+
+        if (endDate == null) endDate = LocalDate.now();
+
         String query = """
                    SELECT
                        f.id AS field_id,

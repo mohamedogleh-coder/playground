@@ -28,15 +28,16 @@ public class StadiumController {
         return ResponseEntity.ok().body(new ApiResponse<>(stadiumService.getAllStadiums()));
     }
 
-
-    @GetMapping("/{stadiumId}/events/{startDate}/{endDate}")
-    public ResponseEntity<ApiResponse<List<EventsBookedSummery>>> getStadiumBookedEvents(@PathVariable UUID stadiumId, @PathVariable LocalDate startDate, @PathVariable LocalDate endDate) {
+    @GetMapping("/{stadiumId}/events")
+    public ResponseEntity<ApiResponse<List<EventsBookedSummery>>> getStadiumBookedEvents(@PathVariable UUID stadiumId, @RequestParam(value = "startDate") LocalDate startDate,
+                                                                                         @RequestParam(value = "endDate",required = false) LocalDate endDate) {
         return ResponseEntity.ok().body(new ApiResponse<>(stadiumService.getEventBookingStatusSummaryByDateRange(stadiumId, startDate, endDate)));
     }
 
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<StadiumResponse>> registerStadium(@RequestPart("request") @Valid StadiumRegRequest regRequest, @RequestPart(value = "profile", required = false) MultipartFile profile) {
+    public ResponseEntity<ApiResponse<StadiumResponse>> registerStadium(@RequestPart("request") @Valid StadiumRegRequest regRequest,
+                                                                        @RequestPart(value = "profile", required = false) MultipartFile profile) {
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(stadiumService.registerStadium(regRequest, profile)));
     }
 
