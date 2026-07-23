@@ -2,7 +2,9 @@ package com.hammi.playground.modules.events;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,27 +15,32 @@ public record EventBookingRequest(
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
         LocalDateTime startTime,
 
-        Integer generatedCode,
+        String generatedCode,
 
-        UUID payerId,
+        UUID whoPaid,
 
-        UUID receivedById,
+        UUID receivedBy,
 
-        @NotNull(message = "Payment method is required")
+        @NotBlank(message = "Payment method is required")
         String paymentMethod,
 
         String merchantNumber,
 
-        @NotNull(message = "Event type is required")
-        EventStatus eventStatus,
+        @NotBlank(message = "Payment status is required")
+        @Pattern(
+                regexp = "^(paid|partial|refunded)$",
+                message = "Payment status must be one of: paid, partial, refunded"
+        )
+        String paymentStatus,
+
 
         @NotNull(message = "Discount is required")
         BigDecimal discounted
 ) {
 
-    @AssertTrue(message = "Exactly one of payerId or receivedById must be provided.")
+    @AssertTrue(message = "Exactly one of whoPaid or receivedBy must be provided.")
     public boolean isValidPaymentParticipants() {
-        return (payerId == null) != (receivedById == null);
+        return (whoPaid == null) != (receivedBy == null);
     }
 
     @AssertTrue(message = "Merchant number is required for non-cash payments.")
@@ -50,6 +57,6 @@ public record EventBookingRequest(
         if (discounted == null || discounted.compareTo(BigDecimal.ZERO) == 0) {
             return true;
         }
-        return receivedById != null;
+        return receivedBy != null;
     }
 }

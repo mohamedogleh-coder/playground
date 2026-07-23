@@ -29,18 +29,14 @@ public class StadiumController {
     }
 
 
-    @GetMapping("/{stadiumId}/events/{bookingDate}")
-    public ResponseEntity<ApiResponse<List<EventsBookedSummery>>> getStadiumBookedEvents(
-            @PathVariable UUID stadiumId,
-            @PathVariable LocalDate bookingDate
-    ) {
-        return ResponseEntity.ok().body(new ApiResponse<>(stadiumService.getEventsBookingSpecificDate(stadiumId, bookingDate)));
+    @GetMapping("/{stadiumId}/events/{startDate}/{endDate}")
+    public ResponseEntity<ApiResponse<List<EventsBookedSummery>>> getStadiumBookedEvents(@PathVariable UUID stadiumId, @PathVariable LocalDate startDate, @PathVariable LocalDate endDate) {
+        return ResponseEntity.ok().body(new ApiResponse<>(stadiumService.getEventBookingStatusSummaryByDateRange(stadiumId, startDate, endDate)));
     }
 
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<StadiumResponse>> registerStadium(@RequestPart("request") @Valid StadiumRegRequest regRequest,
-                                                                        @RequestPart(value = "profile", required = false) MultipartFile profile) {
+    public ResponseEntity<ApiResponse<StadiumResponse>> registerStadium(@RequestPart("request") @Valid StadiumRegRequest regRequest, @RequestPart(value = "profile", required = false) MultipartFile profile) {
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(stadiumService.registerStadium(regRequest, profile)));
     }
 
@@ -49,13 +45,14 @@ public class StadiumController {
         return ResponseEntity.ok().body(new ApiResponse<>(stadiumService.updateStadium(stadiumId, regRequest)));
     }
 
+    @DeleteMapping("/{stadiumId}/profile")
+    public ResponseEntity<ApiResponse<StadiumResponse>> deleteStadiumProfile(@PathVariable UUID stadiumId) {
+        stadiumService.deleteProfile(stadiumId);
+        return ResponseEntity.ok().body(new ApiResponse<>(null));
+    }
 
     @GetMapping("/filter")
-    public ResponseEntity<ApiResponse<List<FilteredStadiumsResponse>>> filterEventsResponse(@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-                                                                                            LocalDateTime time,
-                                                                                            @RequestParam(required = false) Double latitude,
-                                                                                            @RequestParam(required = false) Double longitude,
-                                                                                            @RequestParam Integer capacity) {
+    public ResponseEntity<ApiResponse<List<FilteredStadiumsResponse>>> filterEventsResponse(@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime time, @RequestParam(required = false) Double latitude, @RequestParam(required = false) Double longitude, @RequestParam Integer capacity) {
         return ResponseEntity.ok().body(new ApiResponse<>(stadiumService.filterEventsResponse(time, latitude, longitude, capacity)));
     }
 }

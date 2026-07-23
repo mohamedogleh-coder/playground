@@ -2,17 +2,18 @@ package com.hammi.playground.modules.events;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.Getter;
 
-public enum EventStatus {
+@Getter
+public enum PaymentStatus {
 
-    PENDING("pending"),
-    CONFIRMED("confirmed"),
-    COMPLETED("completed"),
-    CANCELED("canceled");
+    PAID("paid"),
+    PARTIAL("partial"),
+    REFUNDED("refunded");
 
     private final String value;
 
-    EventStatus(String value) {
+    PaymentStatus(String value) {
         this.value = value;
     }
 
@@ -22,15 +23,16 @@ public enum EventStatus {
     }
 
     @JsonCreator
-    public static EventStatus fromValue(String value) {
-        for (EventStatus status : values()) {
+    public static PaymentStatus fromValue(String value) {
+        for (PaymentStatus status : values()) {
             if (status.value.equalsIgnoreCase(value)) {
                 return status;
             }
         }
 
         throw new IllegalArgumentException(
-                "Unknown event status: " + value
+                "Unknown payment status: " + value
         );
     }
 }
+

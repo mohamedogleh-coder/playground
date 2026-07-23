@@ -14,24 +14,24 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/fields/{fieldId}/events")
-public class EventController {
+public class EventBookingController {
 
-    private final EventService eventService;
+    private final EventBookingService eventService;
+
 
     @GetMapping("/slots/{eventDate}")
     public ResponseEntity<ApiResponse<List<TimeSlotsResponse>>> generateEventSlots(@PathVariable Short fieldId, @PathVariable LocalDate eventDate) {
         return ResponseEntity.ok(new ApiResponse<>(eventService.generateEventSlots(fieldId, eventDate)));
     }
 
-
     @PostMapping
-    public ResponseEntity<ApiResponse<Integer>> takeEvent(@PathVariable Short fieldId, @RequestBody @Valid EventBookingRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(eventService.takeEvent(fieldId, request)));
+    public ResponseEntity<ApiResponse<Integer>> bookEvent(@PathVariable Short fieldId, @RequestBody @Valid EventBookingRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(eventService.bookEvent(fieldId, request)));
     }
 
-    @PostMapping("/{eventId}/halves")
-    public ResponseEntity<ApiResponse<Integer>> takeAnotherHalf(@PathVariable Integer eventId, @RequestBody @Valid EventTakeHalfRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(eventService.takeAnotherHalf(eventId, request)));
+    @PostMapping("/{eventId}/half")
+    public ResponseEntity<ApiResponse<Integer>> bookAnotherHalf(@PathVariable Integer eventId, @RequestBody @Valid EventTakeHalfRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(eventService.bookAnotherHalf(eventId, request)));
     }
 
     @GetMapping("/{eventId}")

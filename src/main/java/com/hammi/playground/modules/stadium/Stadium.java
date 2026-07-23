@@ -29,7 +29,6 @@ public class Stadium {
     @Column(name = "stadium_name", unique = true, length = 100, nullable = false)
     private String stadiumName;
 
-
     @Column(name = "extra_time", nullable = false)
     private Short extraTime;
 

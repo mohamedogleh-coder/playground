@@ -1,5 +1,6 @@
 package com.hammi.playground.modules.events;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 
@@ -7,21 +8,19 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public record EventTakeHalfRequest(
-        Integer eventKey,
+        String eventKey,
 
         UUID payerId,
 
         UUID receivedById,
 
-        @NotNull(message = "Payment method is required")
         String paymentMethod,
 
+        @NotNull(message = "Merchant number is required")
         String merchantNumber,
 
-        BigDecimal discounted,
-
-        @NotNull(message = "Amount paid amount is required")
-        BigDecimal amountPaid
+        @NotNull(message = "Discount cant be null")
+        BigDecimal discounted
 ) {
 
     @AssertTrue(message = "Exactly one of payerId or receivedById must be provided.")
@@ -29,12 +28,14 @@ public record EventTakeHalfRequest(
         return (payerId == null) != (receivedById == null);
     }
 
-    @AssertTrue(message = "merchantNumber number is required for non-cash payments.")
-    public boolean isValidMerchantNumber() {
-        if ("CASH".equalsIgnoreCase(paymentMethod)) {
-            return merchantNumber == null || merchantNumber.isBlank();
-        }
-        return merchantNumber != null && !merchantNumber.isBlank();
+
+    @AssertTrue(message = "Payment method and merchant number must be provided together.")
+    public boolean isValidPaymentMethod() {
+
+        boolean methodProvided = paymentMethod != null && !paymentMethod.isBlank();
+        boolean merchantProvided = merchantNumber != null && !merchantNumber.isBlank();
+
+        return methodProvided == merchantProvided;
     }
 
 

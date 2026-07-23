@@ -4,6 +4,9 @@ package com.hammi.playground.modules.events;
 public record EventsBookedSummery(
         short fieldId,
         short capacity,
-        String date,
-        short totalEvents) {
+        short pendingEvents,
+        short confirmedEvents,
+        short completedEvents,
+        short canceledEvents
+) {
 }
