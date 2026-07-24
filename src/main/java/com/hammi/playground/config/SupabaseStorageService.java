@@ -29,24 +29,34 @@ public class SupabaseStorageService {
         return headers;
     }
 
-    public String uploadFile(MultipartFile file, String path) throws IOException {
-        String url = "%s/storage/v1/object/%s/%s".formatted(supabaseProperties.getUrl(), BUCKET, path);
+
+    public String uploadFile(MultipartFile file, String folderPrefix) throws IOException {
+
+        String path = buildPath(folderPrefix, file);
+
+        String url = "%s/storage/v1/object/%s/%s"
+                .formatted(supabaseProperties.getUrl(), BUCKET, path);
 
         HttpHeaders headers = baseHeaders();
+
         MediaType contentType = file.getContentType() != null
                 ? MediaType.parseMediaType(file.getContentType())
                 : MediaType.APPLICATION_OCTET_STREAM;
+
         headers.setContentType(contentType);
 
         HttpEntity<byte[]> request = new HttpEntity<>(file.getBytes(), headers);
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
+
+        ResponseEntity<String> response =
+                restTemplate.exchange(url, HttpMethod.POST, request, String.class);
 
         if (!response.getStatusCode().is2xxSuccessful()) {
-            throw new IllegalStateException("Can't upload image" + response.getBody());
+            throw new IllegalStateException("Can't upload image " + response.getBody());
         }
 
         return path;
     }
+
 
     public List<String> uploadFiles(List<MultipartFile> files, String folderPrefix) throws IOException {
         List<String> uploadedPaths = new ArrayList<>();
@@ -123,7 +133,7 @@ public class SupabaseStorageService {
             extension = origName.substring(origName.lastIndexOf(".")).toLowerCase();
         }
 
-        String randomFileName = UUID.randomUUID().toString() + extension;
+        String randomFileName = UUID.randomUUID() + extension;
 
         String prefix = folderPrefix.endsWith("/") ? folderPrefix : folderPrefix + "/";
         return "%s%s".formatted(prefix, randomFileName);

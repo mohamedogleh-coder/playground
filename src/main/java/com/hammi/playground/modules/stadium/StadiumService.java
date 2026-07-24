@@ -12,9 +12,7 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,7 +34,7 @@ public class StadiumService {
         return jdbcTemplate.query("SELECT * FROM filter_events_fn(CAST(? as timestamp),? ,?,CAST(? as smallint),?);", (rs, _) -> new FilteredStadiumsResponse(rs.getString("stadium_id"), rs.getString("stadium_name"), rs.getInt("extra_time"), rs.getDouble("distance"), rs.getInt("field_id"), rs.getInt("capacity"), rs.getBigDecimal("field_cost"), rs.getDouble("longitude"), rs.getDouble("latitude")), time, latitude, longitude, capacity, null);
     }
 
-    public StadiumResponse registerStadium(StadiumRegRequest regRequest, MultipartFile profile) {
+    public StadiumResponse registerStadium(StadiumRegRequest regRequest) {
         try {
             GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
 
@@ -50,23 +48,13 @@ public class StadiumService {
 
             var savedStadium = stadiumRepository.save(stadium);
 
-            String profilePath = null;
-            if (profile != null && !profile.isEmpty()) {
-                String folderPrefix = "stadiums/" + savedStadium.getId() + "/profile";
-
-                profilePath = supabaseStorageService.uploadFile(profile, folderPrefix);
-
-                savedStadium.setProfileUrl(profilePath);
-                stadiumRepository.save(savedStadium);
-            }
-
-            return new StadiumResponse(savedStadium.getId(), savedStadium.getStadiumName(), savedStadium.getLatitude(), savedStadium.getLongitude(), stadium.getExtraTime(), savedStadium.getHalfBooking(), profilePath != null ? supabaseStorageService.getPublicUrl(profilePath) : null);
-
-        } catch (IOException e) {
-            throw new RuntimeException("Image upload failed: " + e.getMessage());
+            return new StadiumResponse(savedStadium.getId(), savedStadium.getStadiumName(), savedStadium.getLatitude(), savedStadium.getLongitude(), stadium.getExtraTime(), savedStadium.getHalfBooking(), savedStadium.getProfileUrl());
         } catch (Exception e) {
             if (e.getMessage() != null && e.getMessage().contains("stadiums_stadium_name_key")) {
                 throw new ApiException("Garoonka " + regRequest.stadiumName() + " hore ayuu u jiraa fadlan dooro magac kale");
+            }
+            if (e.getMessage() != null && e.getMessage().contains("manager_single_stadium_unq")) {
+                throw new ApiException("Userkan garoon hore ayuu admin ka yahay");
             }
             throw e;
         }
@@ -102,7 +90,7 @@ public class StadiumService {
             LocalDate startDate,
             LocalDate endDate
     ) {
-        if (endDate == null) endDate = LocalDate.now();
+        if (endDate == null) endDate = LocalDate.now().plusDays(7);
 
         String query = """
                    SELECT
@@ -113,7 +101,7 @@ public class StadiumService {
                      COUNT(eb.id) FILTER (WHERE eb.event_status = 'completed') AS completed_events,
                      COUNT(eb.id) FILTER (WHERE eb.event_status = 'canceled') AS canceled_events
                    FROM public.fields f
-                            LEFT JOIN public.event_bookings eb
+                              JOIN public.event_bookings eb
                                       ON f.id = eb.field_id
                                           AND eb.event_start::date BETWEEN ? AND ?
                    WHERE f.stadium_id = ?
@@ -135,15 +123,6 @@ public class StadiumService {
                 endDate,
                 stadiumId
         );
-    }
-
-    public void deleteProfile(UUID stadiumId) {
-        var stadium = stadiumRepository.findById(stadiumId).orElseThrow(() -> new NotFoundException("Stadium not found"));
-        if (stadium.getProfileUrl() != null) {
-            supabaseStorageService.deleteFile(stadium.getProfileUrl());
-            stadium.setProfileUrl(null);
-            stadiumRepository.save(stadium);
-        }
     }
 
 }

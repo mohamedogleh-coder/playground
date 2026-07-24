@@ -124,6 +124,7 @@ package com.hammi.playground.exceptions;//
 
 import com.hammi.playground.exceptions.ApiException;
 import com.hammi.playground.exceptions.NotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -132,10 +133,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-
+@Slf4j
 @RestControllerAdvice
 public class ApiExceptionHandler {
 //
@@ -177,6 +179,16 @@ public class ApiExceptionHandler {
 
         response.put("status", 0);
         response.put("message", "Khalad database ah ayaa dhacay");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+
+
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<Map<String, Object>> handleIOExceptions(IOException ex) {
+        log.error("IO error occurred", ex);
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", 0);
+        response.put("message", "IO error " + ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 
