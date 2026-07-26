@@ -1,6 +1,6 @@
 package com.hammi.playground.modules.fields;
 
- import com.hammi.playground.modules.events.EventBooking;
+ import com.hammi.playground.modules.events.entities.EventBooking;
  import com.hammi.playground.modules.stadium.Stadium;
 import jakarta.persistence.*;
 import lombok.*;

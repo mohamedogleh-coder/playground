@@ -1,4 +1,4 @@
-package com.hammi.playground.modules.events;
+package com.hammi.playground.modules.events.entities;
 
 import com.hammi.playground.modules.fields.Field;
 import jakarta.persistence.*;

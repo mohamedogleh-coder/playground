@@ -1,6 +1,5 @@
-package com.hammi.playground.modules.events;
+package com.hammi.playground.modules.events.dto;
 
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 

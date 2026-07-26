@@ -1,4 +1,4 @@
-package com.hammi.playground.modules.events;
+package com.hammi.playground.modules.events.entities;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

@@ -1,5 +1,6 @@
-package com.hammi.playground.modules.events;
+package com.hammi.playground.modules.events.repos;
 
+import com.hammi.playground.modules.events.entities.EventBooking;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

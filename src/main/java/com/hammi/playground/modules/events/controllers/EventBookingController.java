@@ -1,5 +1,8 @@
-package com.hammi.playground.modules.events;
+package com.hammi.playground.modules.events.controllers;
 
+import com.hammi.playground.modules.events.dto.EventBookingRequest;
+import com.hammi.playground.modules.events.dto.EventTakeHalfRequest;
+import com.hammi.playground.modules.events.services.EventBookingService;
 import com.hammi.playground.modules.fields.TimeSlotsResponse;
 import com.hammi.playground.util.ApiResponse;
 import jakarta.validation.Valid;
@@ -34,8 +37,9 @@ public class EventBookingController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(eventService.bookAnotherHalf(eventId, request)));
     }
 
-    @GetMapping("/{eventId}")
-    public ResponseEntity<ApiResponse<EventInformationResponse>> getEventInformation(@PathVariable Integer eventId) {
-        return ResponseEntity.ok().body(new ApiResponse<>(eventService.getEventInformation(eventId)));
-    }
+//
+//    @GetMapping("/{eventId}")
+//    public ResponseEntity<ApiResponse<EventInformationResponse>> getEventInformation(@PathVariable Integer eventId) {
+//        return ResponseEntity.ok().body(new ApiResponse<>(eventService.getEventInformation(eventId)));
+//    }
 }

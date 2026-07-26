@@ -1,13 +1,12 @@
-package com.hammi.playground.modules.events;
+package com.hammi.playground.modules.events.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.AssertTrue;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 public record EventBookingRequest(
@@ -20,11 +19,9 @@ public record EventBookingRequest(
         UUID whoPaid,
 
         UUID receivedBy,
-
-        @NotBlank(message = "Payment method is required")
-        String paymentMethod,
-
-        String merchantNumber,
+        @NotEmpty(message = "At least one merchant payment is required")
+        @Valid
+        Set<EventPaymentMerchantRequest> merchants,
 
         @NotBlank(message = "Payment status is required")
         @Pattern(
@@ -33,22 +30,14 @@ public record EventBookingRequest(
         )
         String paymentStatus,
 
-
         @NotNull(message = "Discount is required")
+        @DecimalMin(value = "0.00", message = "Discount cannot be negative")
         BigDecimal discounted
 ) {
 
     @AssertTrue(message = "Exactly one of whoPaid or receivedBy must be provided.")
     public boolean isValidPaymentParticipants() {
         return (whoPaid == null) != (receivedBy == null);
-    }
-
-    @AssertTrue(message = "Merchant number is required for non-cash payments.")
-    public boolean isValidMerchantNumber() {
-        if ("CASH".equalsIgnoreCase(paymentMethod)) {
-            return merchantNumber == null || merchantNumber.isBlank();
-        }
-        return merchantNumber != null && !merchantNumber.isBlank();
     }
 
 
@@ -60,3 +49,4 @@ public record EventBookingRequest(
         return receivedBy != null;
     }
 }
+
