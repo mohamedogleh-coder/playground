@@ -14,7 +14,7 @@ public record EventBookingRequest(
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
         LocalDateTime startTime,
 
-        String generatedCode,
+        String eventKey,
 
         UUID whoPaid,
 
