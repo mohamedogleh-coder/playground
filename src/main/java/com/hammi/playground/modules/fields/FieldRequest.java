@@ -10,6 +10,6 @@ public record FieldRequest(
         @NotNull(message = "Field cost is required")
         BigDecimal cost,
         @NotNull(message = "Stop booking is required")
-        Boolean stopBooking
+        Boolean allowBooking
 ) {
 }

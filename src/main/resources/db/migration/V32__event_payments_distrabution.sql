@@ -9,10 +9,7 @@ CREATE TABLE event_merchant_payments
 );
 
 ALTER TABLE event_payments
-DROP
-COLUMN payment_method,
-DROP
-COLUMN merchant_number,
-DROP
-COLUMN amount_paid;
+DROP COLUMN IF EXISTS payment_method,
+    DROP COLUMN IF EXISTS merchant_number,
+    DROP COLUMN IF EXISTS amount_paid;
 

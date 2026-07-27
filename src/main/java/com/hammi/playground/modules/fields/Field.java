@@ -31,8 +31,8 @@ public class Field {
     @Column(name = "capacity", nullable = false)
     private Short capacity;
 
-    @Column(name = "stop_booking", nullable = false)
-    private Boolean stopBooking;
+    @Column(name = "allow_booking", nullable = false)
+    private Boolean allowBooking;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "stadium_id", nullable = false)

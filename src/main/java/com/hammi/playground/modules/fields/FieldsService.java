@@ -86,7 +86,7 @@ public class FieldsService {
 
         var stadium = stadiumRepository.findStadiumWithFields(stadiumId).orElseThrow(() -> new NotFoundException("Stadium not exists"));
 
-        var newField = Field.builder().cost(request.cost()).stopBooking(request.stopBooking())
+        var newField = Field.builder().cost(request.cost()).allowBooking(request.allowBooking())
                 .capacity(request.capacity()).stadium(stadium).build();
         var savedField = fieldRepository.save(newField);
 
@@ -95,7 +95,7 @@ public class FieldsService {
         if (hasImages(imageFiles)) {
             fieldImages = addNewImages(stadiumId, savedField, imageFiles);
         }
-        return new FieldResponse(savedField.getId(), savedField.getCapacity(), savedField.getCost(), savedField.getStopBooking(), fieldImages.stream().map(supabaseStorageService::getPublicUrl).toList());
+        return new FieldResponse(savedField.getId(), savedField.getCapacity(), savedField.getCost(), savedField.getAllowBooking(), fieldImages.stream().map(supabaseStorageService::getPublicUrl).toList());
     }
 
     @Transactional
@@ -107,7 +107,7 @@ public class FieldsService {
 
         field.setCapacity(request.capacity());
         field.setCost(request.cost());
-        field.setStopBooking(request.stopBooking());
+        field.setAllowBooking(request.allowBooking());
 
         List<String> fieldImages = new ArrayList<>(field.getFieldImages().stream().map(FieldImage::getImagePath).toList());
 
@@ -116,7 +116,7 @@ public class FieldsService {
         }
 
         Field savedField = fieldRepository.save(field);
-        return new FieldResponse(savedField.getId(), savedField.getCapacity(), savedField.getCost(), savedField.getStopBooking(), fieldImages.stream().map(supabaseStorageService::getPublicUrl).toList());
+        return new FieldResponse(savedField.getId(), savedField.getCapacity(), savedField.getCost(), savedField.getAllowBooking(), fieldImages.stream().map(supabaseStorageService::getPublicUrl).toList());
     }
 
 

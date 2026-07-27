@@ -70,7 +70,8 @@ public class EventBookingService {
 
         var eventBooked = EventBooking.builder()
                 .field(field)
-                .eventKey(request.eventKey())
+                .eventKey(request.paymentStatus().equals(PaymentStatus.PAID.getValue()) ? null
+                        : request.eventKey())
                 .paymentStatus(request.paymentStatus())
                 .eventStatus(getEventStatus(request.paymentStatus()))
                 .remaining(remaining)
@@ -123,7 +124,7 @@ public class EventBookingService {
         event.setRemaining(BigDecimal.ZERO);
         event.setPaymentStatus(PaymentStatus.PAID.getValue());
         event.setEventStatus(EventStatus.CONFIRMED.getValue());
-
+        event.setEventKey(null);
         event.getBookingPayments().add(
                 buildBookingPayment(
                         event,
