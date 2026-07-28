@@ -7,13 +7,7 @@ public record FieldResponse(
         short id,
         short capacity,
         BigDecimal cost,
-        boolean stopBooking,
+        boolean allowBooking,
         List<String> fieldImages
 ) {
 }
-
-//
-//record FieldImageResponse(Short imageId, String imagePath){
-//
-//}
-

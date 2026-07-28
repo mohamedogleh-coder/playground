@@ -8,9 +8,9 @@ import java.util.List;
 
 public record EventInformationResponse(
         int eventId,
-        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
         LocalDateTime eventStart,
-        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
         LocalDateTime eventEnd,
         String eventKey,
         Short extraTime,

@@ -57,15 +57,15 @@ public class SupabaseStorageService {
         return path;
     }
 
-
     public List<String> uploadFiles(List<MultipartFile> files, String folderPrefix) throws IOException {
+
         List<String> uploadedPaths = new ArrayList<>();
         try {
             for (MultipartFile file : files) {
-                String path = buildPath(folderPrefix, file);
-                String savedPath = uploadFile(file, path);
+                String savedPath = uploadFile(file, folderPrefix);
                 uploadedPaths.add(savedPath);
             }
+
             return uploadedPaths;
         } catch (Exception ex) {
             if (!uploadedPaths.isEmpty()) {
@@ -74,7 +74,6 @@ public class SupabaseStorageService {
             throw ex;
         }
     }
-
 
     public void deleteFile(String path) {
         String url = "%s/storage/v1/object/%s/%s".formatted(supabaseProperties.getUrl(), BUCKET, path);
@@ -95,7 +94,6 @@ public class SupabaseStorageService {
     public String getPublicUrl(String path) {
         return "%s/storage/v1/object/public/%s/%s".formatted(supabaseProperties.getUrl(), BUCKET, path);
     }
-
 
     public String extractPath(String url) {
         if (url == null || url.isBlank()) {

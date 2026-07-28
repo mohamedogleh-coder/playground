@@ -33,7 +33,7 @@ public class FieldsService {
                 SELECT f.id,
                        f.cost,
                        f.capacity,
-                       f.stop_booking,
+                       f.allow_booking,
                        COALESCE(
                            json_agg(fi.image_path) FILTER (WHERE fi.id IS NOT NULL),
                            '[]'::json
@@ -73,7 +73,7 @@ public class FieldsService {
                     rs.getShort("id"),
                     rs.getShort("capacity"),
                     rs.getBigDecimal("cost"),
-                    rs.getBoolean("stop_booking"),
+                    rs.getBoolean("allow_booking"),
                     imageUrls
             );
 

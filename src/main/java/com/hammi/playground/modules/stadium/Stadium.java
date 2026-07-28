@@ -1,5 +1,6 @@
 package com.hammi.playground.modules.stadium;
 
+import com.hammi.playground.modules.expanses.Expense;
 import com.hammi.playground.modules.fields.Field;
 import com.hammi.playground.modules.managers.StadiumManager;
 import com.hammi.playground.modules.merchants.StadiumMerchant;
@@ -65,6 +66,10 @@ public class Stadium {
     @Builder.Default
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "stadium")
     private List<StadiumManager> managers = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "stadium")
+    private List<Expense> expanses = new ArrayList<>();
 
 
     @PrePersist
